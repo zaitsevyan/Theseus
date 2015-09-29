@@ -4,6 +4,7 @@ obj
 Release
 stats.sh
 *~
+*.userprefs
 Theseus/configuration.json
 packages
 !packages/repositories.config
