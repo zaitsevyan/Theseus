@@ -245,7 +245,7 @@ public override void Process(Request request, Response response){
     Console.WriteLine(response.Info);
 }
 ~~~
- - When *CancellationToken* is canceled, you should finish your operations as fast as possible and call **Api.Plugin.Finish()** method. If it will not be called, **Theseus.Core** will wait some time and then, it abort plugin's thread(is not safe).
+ - When *CancellationToken* is canceled, you should finish your operations as fast as possible and call **Api.Plugin.Finish()** method. If it will not be called, **Theseus.Core** will wait some time and aborts plugin's thread(is not safe).
 
 ## How to implement new module (command processor)
  - Create public class inherited from **Api.Module**
