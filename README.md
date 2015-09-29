@@ -21,7 +21,7 @@ Open MonoDevelope/Xamarin and Build it :)
 ### Release structure
  - **Modules** - directory for comand processors
  - **Adapters** - directory for communication adapters
- - **accounts.json** - simple text DB file for accounts subsystem. Can be replaced by better IAccounts implementation
+ - **accounts.json** - simple text DB file for accounts subsystem. It could be replaced by better IAccounts implementation
  - **configuration.json** - adapters and modules configuration
 
 #### accounts.json
@@ -39,7 +39,7 @@ It is json array, every item is one acount record.
 - **Name** - Visual name
 - **ID** - Login ID
 - **Password** - Account password
-- **Role** -  Account permissions. One of Owner, Admin, Moderator, Normal, Ignore. Can be extended with **Api.Role** enum.
+- **Role** -  Account permissions. One of Owner, Admin, Moderator, Normal, Ignore. It could be extended with **Api.Role** enum.
 
 #### configuration.json
 It is json object of two parts: **adapters** and **modules**. Both of it have same structure, but they are used to configurate different plugin types: **adapters** for **Api.Adapter** objects, **modules** for **Api.Module** objects
@@ -203,14 +203,14 @@ public class JabberAdapter: Api.Adapter {
     }
 }
 ~~~
- - Override **Start** method and save *CancellationToken* for future purposes. You should call **base.Start** method implementation.
+ - Override **Api.Plugin.Start(CancellationToken token)** method and save *CancellationToken* for future purposes. You should call **base.Start(token)** method.
 ~~~{.cs}
 public override void Start(CancellationToken token){
     base.Start(token);
     token.Register(Finish);
 }
 ~~~
-   - You can block this thread for your operations(see **TerminalAdapter**) and register *Thread.CurrentThread.Abort* on token cancel
+   - You could block this thread for your operations(see **TerminalAdapter**) and register *Thread.CurrentThread.Abort* on *CancellationToken* cancel
 ~~~{.cs}
 public override void Start(CancellationToken token){
     try {
@@ -231,7 +231,7 @@ public override void Start(CancellationToken token){
     }
 }
 ~~~
- - When you have received new comand, you should send it to **Api.IAdapterManager** for processing. You should get account to identify command sender: you can use **ICore.GetAccountsDB()** or create your own new **Api.Account**.
+ - When you have received new comand, you should send it to **Api.IAdapterManager** for processing. You should get account to identify command sender: you may use **ICore.GetAccountsDB()** or create your own new **Api.Account** instance.
 ~~~{.cs}
 var sender = new Sender(new Account("Developer", Role.Owner));
 var command = Console.ReadLine();
@@ -245,6 +245,88 @@ public override void Process(Request request, Response response){
     Console.WriteLine(response.Info);
 }
 ~~~
- - When *CancellationToken* is canceled, you should finish your operations as fast as possible and call **Api.Adapter.Finish** method. If it will not be called, **Theseus.Core** will wait some time and then, it abort plugin's thread(is not safe).
+ - When *CancellationToken* is canceled, you should finish your operations as fast as possible and call **Api.Plugin.Finish()** method. If it will not be called, **Theseus.Core** will wait some time and then, it abort plugin's thread(is not safe).
 
 ## How to implement new module (command processor)
+ - Create public class inherited from **Api.Module**
+ - Implement public constuctor
+~~~{.cs}
+public class TheseusControl : Module {
+    public TheseusControl(Dictionary<String, Object> config, IModuleManager manager)
+        : base("Theseus Control", config, manager) {
+    }
+}
+~~~
+ - Override **Api.Plugin.Start(CancellationToken token)** method and save *CancellationToken* for future purposes. You should call **base.Start(token)** method. If your commands has not long-term operations, you could register **Api.Plugin.Finish()** method *CancellationToken* cancel.
+~~~{.cs}
+public override void Start(CancellationToken token){
+    base.Start(token);
+    token.Register(Finish);
+}
+~~~
+   - You could block this thread for your operations(see **TerminalAdapter**) and register *Thread.CurrentThread.Abort* on token cancel
+~~~{.cs}
+public override void Start(CancellationToken token){
+    try {
+        base.Start(token);
+        // Setup remote connections
+        using (var abort = token.Register(Thread.CurrentThread.Abort)) {
+            //Do some blocking work
+        }
+    }
+    catch (ThreadAbortException) {
+        //It is OK.
+    }
+    finally {
+        Finish();
+    }
+}
+~~~
+ - To add new command, you should impelement method with **public Task<Response> Shutdown(Sender sender, String[] args)** signature(it could by *async*). It should contains **Api.Command** and **Api.Roles** attributes.
+~~~{.cs}
+[Command("shutdown", "", "Stop Theseus core")]
+[Roles(Role.Owner)]
+public Task<Response> Shutdown(Sender sender, String[] args){
+    Manager.GetCore().Stop();
+    return Task.FromResult<Response>(null);
+}
+~~~
+
+~~~{.cs}
+[Command("login", "<username> <password>", "Login as another user")]
+[Roles(Role.Ignore)]
+public async Task<Response> Login(Sender sender, String[] args){
+    if (args.Length != 2) {
+        var response = new Response(Channel.Private);
+        response.SetError("Incorrect options, /login :username :password");
+        return response;
+    }
+
+    var username = args[0];
+    var password = args[1];
+    Account account = await Manager.GetCore().GetAccountsDB().GetAccount(username, password);
+    if (account != null) {
+        if (account.Role <= sender.Role) {
+            var response = new Response(Channel.Private);
+            response.SetMessage("Your current role is better than authorized!");
+            return response;
+        }
+        else {
+            sender.Account = account;
+            var response = new Response(Channel.Private);
+            response.SetMessage("You are logger as {0} now.", account.Role);
+            return response;
+        }
+    }
+    else {
+        var response = new Response(Channel.Private);
+        response.SetError("Incorrect username or/and password!");
+        return response;
+    }
+}
+~~~
+
+### TODO
+ - Move accounts subsystem to own module implementation.
+ - Allow module sharing - Each module can use another modules api.
+ - Fix conflicts on same commands from different Modules. (I think, we should add specify how to identify module's command, maybe some suffixes/prefixes/groups)
