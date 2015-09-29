@@ -330,3 +330,6 @@ public async Task<Response> Login(Sender sender, String[] args){
  - Move accounts subsystem to own module implementation.
  - Allow module sharing - Each module can use another modules api.
  - Fix conflicts on same commands from different Modules. (I think, we should add specify how to identify module's command, maybe some suffixes/prefixes/groups)
+
+##### How it was implemented:
+https://www.livecoding.tv/zaitsevyan/videos/ - "Title is **University homework**"
