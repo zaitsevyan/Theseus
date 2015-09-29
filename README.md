@@ -125,8 +125,9 @@ Every item in list is object. Key is short name of server. Value :
     }
   }
 ~~~
+## For developers
 
-## Main loop
+## Initialization
 To run **Theseus** you should:
  - Create instance of **Theseus.Core** with names of configurations and accounts file
  - Call **Core.Start()**
@@ -172,8 +173,78 @@ config.LoggingRules.Add(rule2);
 // Step 5. Activate the configuration
 LogManager.Configuration = config;
 ~~~
-## Workflow
-Main class is **Theseus.Core**. It initializes, loads and runs plugins at runtime.
 
+## Main loop
+**Theseus** is fully asynchronous platform and it uses *ThreadPool* with async/await *Task* methods for everything.
 
+Main class is **Theseus.Core**. It uses plugin managers to initialize, load and run plugins at runtime. 
+### Workflow
+ - At start, core load plugins and run them in asynchronous tasks.
+ - **Api.Adapter** should connect to his destination and handle IO operation. 
+ - When new command appears, **Api.Adapter** sends it to **Api.IAdapterManager**  for processing. 
+ - **Api.IAdapterManager** uses **Api.IModuleManager** to process command. 
+ - Then, command processor(**Api.Module**) returns result to **Api.IModuleManager**, 
+ - which sends it back to **Api.IAdapterManager** 
+ - and finally to initial **Api.Adapter**.
+ - 
+Modules can run long term operations, for example, to handle alive connection to minecraft server. But, usually it is request-response processing.
 
+Plugins should observe *CancellationToken* to abort their work.
+
+## How to implement new adapter (communication adapter)
+ - Create public class inherited from **Api.Adapter**
+ - Implement public constuctor
+~~~{.cs}
+public class JabberAdapter: Api.Adapter {
+  private Logger Logger { get; set; }
+  public JabberAdapter(Dictionary<String, Object> config, IAdapterManager manager)
+        : base("Jabber", config, manager) {
+        Logger = Manager.GetLogger(this);
+    }
+}
+~~~
+ - Override **Start** method and save *CancellationToken* for future purposes. You should call **base.Start** method implementation.
+~~~{.cs}
+public override void Start(CancellationToken token){
+    base.Start(token);
+    token.Register(Finish);
+}
+~~~
+   - You can block this thread for your operations(see **TerminalAdapter**) and register *Thread.CurrentThread.Abort* on token cancel
+~~~{.cs}
+public override void Start(CancellationToken token){
+    try {
+        base.Start(token);
+        using (var abort = token.Register(Thread.CurrentThread.Abort)) {
+            while (true) {
+                var command = Console.ReadLine();
+                var message = new Request(Sender, command);
+                Manager.Process(this, message);
+            }
+        }
+    }
+    catch (ThreadAbortException) {
+        //It is OK.
+    }
+    finally {
+        Finish();
+    }
+}
+~~~
+ - When you have received new comand, you should send it to **Api.IAdapterManager** for processing. You should get account to identify command sender: you can use **ICore.GetAccountsDB()** or create your own new **Api.Account**.
+~~~{.cs}
+var sender = new Sender(new Account("Developer", Role.Owner));
+var command = Console.ReadLine();
+var message = new Request(sender, command);
+Manager.Process(this, message);
+~~~
+ - When command is processed and response is not empty, **Api.AdapterManager** will call **Api.Adapter.Process** method to send results to initial sender;
+~~~{.cs}
+public override void Process(Request request, Response response){
+    base.Process(request, response);
+    Console.WriteLine(response.Info);
+}
+~~~
+ - When *CancellationToken* is canceled, you should finish your operations as fast as possible and call **Api.Adapter.Finish** method. If it will not be called, **Theseus.Core** will wait some time and then, it abort plugin's thread(is not safe).
+
+## How to implement new module (command processor)
