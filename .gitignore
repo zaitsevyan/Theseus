@@ -8,3 +8,4 @@ Theseus/configuration.json
 packages
 !packages/repositories.config
 Releases
+doc*
