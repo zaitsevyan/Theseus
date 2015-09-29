@@ -13,15 +13,51 @@ using NLog;
 using System.Collections.Generic;
 
 namespace Theseus {
+    /// <summary>
+    /// Theseus.
+    /// </summary>
     public class Core: ICore {
+        /// <summary>
+        /// The adapter manager.
+        /// </summary>
         private AdapterManager adapterManager;
+
+        /// <summary>
+        /// The module manager.
+        /// </summary>
         private ModuleManager moduleManager;
+
+        /// <summary>
+        /// The waiting mutex.
+        /// </summary>
         private ManualResetEventSlim waitingEvent = new ManualResetEventSlim(false);
+
+        /// <summary>
+        /// The cancellation token source.
+        /// </summary>
         private CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
+
+        /// <summary>
+        /// Gets or sets the logger.
+        /// </summary>
+        /// <value>The logger.</value>
         private Logger Logger { get; set;}
+
+        /// <summary>
+        /// The accounts subsystem.
+        /// </summary>
         private Accounts accounts;
+
+        /// <summary>
+        /// Platform configuration.
+        /// </summary>
         private Configuration configuration;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Theseus.Core"/> class.
+        /// </summary>
+        /// <param name="configurationFileName">Configuration file name.</param>
+        /// <param name="accountsFileName">Accounts file name.</param>
         public Core(String configurationFileName, String accountsFileName) {
             AppDomain.CurrentDomain.UnhandledException += 
                 new UnhandledExceptionEventHandler(delegate(object sender, UnhandledExceptionEventArgs e) {
@@ -42,6 +78,9 @@ namespace Theseus {
             Logger.Info("Core initialized");
         }
 
+        /// <summary>
+        /// Start platform.
+        /// </summary>
         public void Start() {
             Logger.Info("Starting...");
             adapterManager.LoadPlugins();
@@ -50,15 +89,25 @@ namespace Theseus {
             moduleManager.LoadPlugins();
             moduleManager.RunPlugins(cancellationTokenSource.Token);
         }
-            
+        /// <summary>
+        /// Gets the adapter manager.
+        /// </summary>
+        /// <returns>The adapter manager.</returns>
         public IAdapterManager GetAdapterManager(){
             return adapterManager;
         }
 
+        /// <summary>
+        /// Gets the module manager.
+        /// </summary>
+        /// <returns>The module manager.</returns>
         public IModuleManager GetModuleManager(){
             return moduleManager;
         }
 
+        /// <summary>
+        /// Stop platform.
+        /// </summary>
         public async Task Stop() {
             Logger.Info("Stopping...");
             cancellationTokenSource.Cancel();
@@ -92,11 +141,18 @@ namespace Theseus {
             Logger.Info("Stopped");
         }
 
+        /// <summary>
+        /// Wait until all plugins is ended. Yous should call Stop() to initiate shutdowning.
+        /// </summary>
         public void Wait() {
 
             waitingEvent.Wait();
         }
 
+        /// <summary>
+        /// Gets the accountsDB subsystem.
+        /// </summary>
+        /// <returns>The accounts subsystem.</returns>
         public IAccounts GetAccountsDB(){
             return accounts;
         }

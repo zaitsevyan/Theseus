@@ -9,12 +9,25 @@ using System;
 using System.Collections.Generic;
 
 namespace Api {
-    
+    /// <summary>
+    /// Roles attribute. You should define it for your own commands. See <see cref="Api.CommandAttribute"/> too.
+    /// </summary>
     [AttributeUsage(AttributeTargets.Method, AllowMultiple = false)]
     public class RolesAttribute : Attribute {
 
+        /// <summary>
+        /// Set of allowed roles.
+        /// </summary>
         private HashSet<Role> allowedRoles = new HashSet<Role>();
+
+        /// <summary>
+        /// Set of excepted roles.
+        /// </summary>
         private HashSet<Role> exceptedRoles = new HashSet<Role>();
+
+        /// <summary>
+        /// The minimal allowed role.
+        /// </summary>
         private Role minAllowedRole;
 
         public RolesAttribute(Role minAccepted = Role.Admin, 
@@ -31,6 +44,11 @@ namespace Api {
                 }
         }
 
+        /// <summary>
+        /// Determines whether specified role is allowed with current rules.
+        /// </summary>
+        /// <returns><c>true</c> if current rules allowed the specified role,<c>false</c> otherwise.</returns>
+        /// <param name="role">Role.</param>
         public bool IsRoleAllowed(Role role){
             bool allowed = role >=
                 minAllowedRole || allowedRoles.Contains(role);

@@ -16,7 +16,13 @@ using System.Text;
 using Newtonsoft.Json.Converters;
 
 namespace Theseus {
+    /// <summary>
+    /// Platform configurator
+    /// </summary>
     public class Configuration {
+        /// <summary>
+        /// Plugin configurations
+        /// </summary>
         public class Plugin {
             [JsonProperty("class")]
             public string Class = null;
@@ -24,12 +30,25 @@ namespace Theseus {
             [JsonProperty("config")]
             public Dictionary<String, Object> Config = new Dictionary<string, object>();
         }
+        /// <summary>
+        /// The adapter configurations.
+        /// </summary>
         [JsonProperty("adapters")]
         public List<Plugin> Adapters = new List<Plugin>();
 
+        /// <summary>
+        /// The module configurations.
+        /// </summary>
         [JsonProperty("modules")]
         public List<Plugin> Modules = new List<Plugin>();
 
+        /// <summary>
+        /// Reads the file async.
+        /// </summary>
+        /// <returns>The file content as UTF8 string.</returns>
+        /// <param name="logger">Logger.</param>
+        /// <param name="fileName">File name.</param>
+        /// <param name="cancellationToken">Cancellation token.</param>
         private static async Task<String> ReadFile(Logger logger, String fileName, CancellationToken cancellationToken){
             try {
                 using (FileStream sourceStream = new FileStream(fileName,
@@ -46,6 +65,11 @@ namespace Theseus {
             return null;
         }
 
+        /// <summary>
+        /// Parse the configuration file.
+        /// </summary>
+        /// <param name="fileName">File name.</param>
+        /// <param name="cancellationToken">Cancellation token.</param>
         public static async Task<Configuration> Parse(String fileName, CancellationToken cancellationToken) {
             var logger = LogManager.GetLogger("Configuration");
             string config = await ReadFile(logger, fileName, cancellationToken);
@@ -55,6 +79,9 @@ namespace Theseus {
             return configuration ?? new Configuration();
         }
 
+        /// <summary>
+        /// Nested dictionary converter.
+        /// </summary>
         private class NestedDictionaryConverter : CustomCreationConverter<IDictionary<string, object>>
         {
             public override IDictionary<string, object> Create(Type objectType)

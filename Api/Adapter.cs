@@ -9,15 +9,33 @@ using System;
 using System.Collections.Generic;
 
 namespace Api {
+    /// <summary>
+    /// Communication adapter base class
+    /// </summary>
     public class Adapter : Plugin {
-        
+
+        /// <summary>
+        /// Current <see cref="Api.IAdapterManager"/> manager
+        /// </summary>
         public readonly IAdapterManager Manager;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Api.Adapter"/> class.
+        /// </summary>
+        /// <param name="name">Adapter name.</param>
+        /// <param name="config">Adapter configuration. See <see cref="Theseus.Configuration"/> class</param>
+        /// <param name="manager">Responsible manager.</param>
         public Adapter(String name, Dictionary<String, Object> config, IAdapterManager manager)
             : base(name, config) {
             Manager = manager;
         }
 
+        /// <summary>
+        /// Process the response.
+        /// </summary>
+        /// <param name="request">Initial request.</param>
+        /// <param name="response">Processed response.</param>
+        /// <summary>It will not be called, if response is null or empty</summary>
         public virtual void Process(Request request, Response response) {
         }
     }

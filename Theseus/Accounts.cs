@@ -18,18 +18,41 @@ using Newtonsoft.Json.Serialization;
 using System.Reflection;
 
 namespace Theseus {
+    /// <summary>
+    /// Implementation of accounts subsystem. It is based on small json db.
+    /// </summary>
     public class Accounts : IAccounts {
+        /// <summary>
+        /// The name of the DB file.
+        /// </summary>
         private readonly String DBFileName;
+
+        /// <summary>
+        /// The cancellation token.
+        /// </summary>
         private CancellationToken CancellationToken;
 
+        /// <summary>
+        /// Gets or sets the logger.
+        /// </summary>
+        /// <value>The logger.</value>
         private Logger Logger { get; set; }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Theseus.Accounts"/> subsystem.
+        /// </summary>
+        /// <param name="dbFileName">Db file name.</param>
+        /// <param name="cancellationToken">Cancellation token.</param>
         public Accounts(String dbFileName, CancellationToken cancellationToken) {
             DBFileName = dbFileName;
             CancellationToken = cancellationToken;
             Logger = LogManager.GetLogger("Accounts");
         }
 
+        /// <summary>
+        /// Reads DB file
+        /// </summary>
+        /// <returns>File content as UTF8 string.</returns>
         private async Task<String> ReadDB(){
             try {
                 using (FileStream sourceStream = new FileStream(DBFileName,
@@ -47,6 +70,10 @@ namespace Theseus {
             return null;
         }
 
+        /// <summary>
+        /// Gets the accounts.
+        /// </summary>
+        /// <returns>The accounts.</returns>
         private async Task<Account[]> GetAccounts(){
             var dbRaw = await ReadDB();
             if (dbRaw == null)
@@ -65,10 +92,23 @@ namespace Theseus {
 
         #region IAccounts implementation
 
+        /// <summary>
+        /// Checks does account exist.
+        /// </summary>
+        /// <returns>true</returns>
+        /// <c>false</c>
+        /// <param name="username">Account ID.</param>
+        /// <param name="password">Account password.</param>
         public async Task<bool> ExistsAccount(string username, string password){
             return (await GetAccount(username, password)) != null;
         }
 
+        /// <summary>
+        /// Gets the account.
+        /// </summary>
+        /// <returns>The account.</returns>
+        /// <param name="username">Username.</param>
+        /// <param name="password">Password.</param>
         public async Task<Account> GetAccount(string username, string password){
             Account[] accounts = await GetAccounts();
 
@@ -85,6 +125,10 @@ namespace Theseus {
 
         #endregion
 
+        /// <summary>
+        /// Private json contract resolver.
+        /// It is used to deserialize records into <see cref="Api.Account"/> instances, which use private properties and private setters.
+        /// </summary>
         public class PrivateJsonDefaultContractResolver : DefaultContractResolver {
             protected override JsonProperty CreateProperty(
                 MemberInfo member,

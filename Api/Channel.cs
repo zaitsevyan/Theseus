@@ -8,8 +8,17 @@
 using System;
 
 namespace Api {
+    /// <summary>
+    /// <see cref="Api.Response"/> channel
+    /// </summary>
     public enum Channel {
+        /// <summary>
+        /// Use same channel
+        /// </summary>
         Same,
+        /// <summary>
+        /// Use private channel only
+        /// </summary>
         Private
     }
 }

@@ -11,12 +11,25 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace Theseus {
+    /// <summary>
+    /// Adapter manager implementation.
+    /// </summary>
     public sealed class AdapterManager : PluginManager<Adapter>, IAdapterManager {
-        
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Theseus.AdapterManager"/> class.
+        /// </summary>
+        /// <param name="core">Platworm core.</param>
+        /// <param name="configs">Adapter configurations. See <see cref="Theseus.Configuration"/>.</param>
         public AdapterManager(ICore core, List<Configuration.Plugin> configs)
             : base(core, configs) {
         }
 
+        /// <summary>
+        /// Start specified request processing. It is asynchronous.
+        /// </summary>
+        /// <param name="adapter">Invoking adapter.</param>
+        /// <param name="request">Request.</param>
         public void Process(Adapter adapter, Request request){
             if (!adapter.IsRunning) {
                 return;
@@ -37,6 +50,12 @@ namespace Theseus {
             });
         }
 
+        /// <summary>
+        /// Invokes the adapter and send response
+        /// </summary>
+        /// <param name="adapter">Adapter.</param>
+        /// <param name="request">Initial request.</param>
+        /// <param name="response">Processed response.</param>
         public void InvokeAdapter(Adapter adapter, Request request, Response response){
             if (response == null) {
                 Logger.Trace("Processing {0} ended", request);

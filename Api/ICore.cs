@@ -10,13 +10,42 @@ using NLog;
 using System.Threading.Tasks;
 
 namespace Api {
+    /// <summary>
+    /// Platform core interface
+    /// </summary>
     public interface ICore {
+
+        /// <summary>
+        /// Gets the adapter manager.
+        /// </summary>
+        /// <returns>The adapter manager.</returns>
         IAdapterManager GetAdapterManager();
+
+        /// <summary>
+        /// Gets the module manager.
+        /// </summary>
+        /// <returns>The module manager.</returns>
         IModuleManager GetModuleManager();
+
+        /// <summary>
+        /// Gets the accountsDB subsystem.
+        /// </summary>
+        /// <returns>The accounts subsystem.</returns>
         IAccounts GetAccountsDB();
 
+        /// <summary>
+        /// Start platform.
+        /// </summary>
         void Start();
+
+        /// <summary>
+        /// Stop platform.
+        /// </summary>
         Task Stop();
+
+        /// <summary>
+        /// Wait until all plugins is ended. Yous should call Stop() to initiate shutdowning.
+        /// </summary>
         void Wait();
     }
 }
