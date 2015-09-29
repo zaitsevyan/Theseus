@@ -1,0 +1,48 @@
+{
+  "adapters": [
+    {
+      "class": "TerminalAdapter"
+    },
+    {
+      "class": "JabberAdapter",
+      "config": {
+      	"nickname": "nickname",
+        "username": "username without @",
+        "password": "pass",
+        "server": "xmpp.ru",
+        "conference": "CONFERENCE_NAME@conference.jabber.ru"
+      }
+    }
+  ],
+  "modules": [
+    {
+      "class": "TheseusControl"
+    },
+    {
+      "class": "AuthModule"
+    },
+    {
+      "class": "Minecraft",
+      "config": {
+        "servers": {
+          "classic": {
+            "host": "play.gamecoma.ru",
+            "port": 25565
+          },
+          "tfc": {
+            "host": "play.gamecoma.ru",
+            "port": 25575
+          },
+          "techno": {
+            "host": "play.gamecoma.ru",
+            "port": 25570
+          },
+          "magic": {
+            "host": "play.gamecoma.ru",
+            "port": 25580
+          }
+        }
+      }
+    }
+  ]
+}
