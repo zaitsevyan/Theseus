@@ -13,15 +13,8 @@ Compilation
 ### Windows ###
 Open Visual Studio and Build it
 
-### Mono based ###
-A Makefile is included with following targets:
-
-- Build: **make all**
-- Build lib: **make lib**
-- Build debug lib: **make debug**
-- Generate docs: **make doxygen**
-- Test: **make test**
-- Clean: **make clean**
+### Mono ###
+Open MonoDevelope/Xamarin and Build it :)
 
 API
 ============
