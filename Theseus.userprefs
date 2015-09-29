@@ -1,0 +1,49 @@
+﻿<Properties StartupItem="Theseus/Theseus.csproj" RefactoringSettings.EnableRefactorings="True">
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug|x86" />
+  <MonoDevelop.Ide.Workbench ActiveDocument="Theseus/Program.cs">
+    <Files>
+      <File FileName="Theseus/ModuleManager.cs" Line="164" Column="10" />
+      <File FileName="Theseus/AdapterManager.cs" Line="49" Column="10" />
+      <File FileName="Theseus/Core.cs" Line="39" Column="49" />
+      <File FileName="Api/Response.cs" Line="42" Column="20" />
+      <File FileName="Theseus/PluginManager.cs" Line="81" Column="17" />
+      <File FileName="Theseus/Accounts.cs" Line="29" Column="51" />
+      <File FileName="Modules/Auth/AuthModule.cs" Line="17" Column="37" />
+      <File FileName="Adapters/Terminal/TerminalAdapter.cs" Line="30" Column="1" />
+      <File FileName="Api/Plugin.cs" Line="14" Column="5" />
+      <File FileName="Adapters/JabberAdapter/JabberAdapter.cs" Line="50" Column="30" />
+      <File FileName="Theseus/Program.cs" Line="37" Column="59" />
+      <File FileName="Api/Adapter.cs" Line="16" Column="37" />
+      <File FileName="Api/Account.cs" Line="7" Column="3" />
+      <File FileName="Api/Request.cs" Line="11" Column="5" />
+      <File FileName="Api/CommandAttribute.cs" Line="20" Column="44" />
+      <File FileName="Modules/TheseusControl/TheseusControl.cs" Line="42" Column="32" />
+      <File FileName="Theseus/Configuration.cs" Line="55" Column="57" />
+      <File FileName="Api/Module.cs" Line="12" Column="30" />
+      <File FileName="Api/IModuleManager.cs" Line="18" Column="35" />
+      <File FileName="Modules/TheseusControl/Properties/AssemblyInfo.cs" Line="14" Column="25" />
+      <File FileName="Api/IPluginManager.cs" Line="14" Column="34" />
+      <File FileName="Modules/Minecraft/MCServerPing.cs" Line="27" Column="1" />
+    </Files>
+    <Pads>
+      <Pad Id="ProjectPad">
+        <State name="__root__">
+          <Node name="Theseus" expanded="True">
+            <Node name="Adapters" expanded="True" />
+            <Node name="Modules" expanded="True">
+              <Node name="Minecraft" expanded="True" />
+            </Node>
+            <Node name="Api" selected="True" />
+            <Node name="Theseus" expanded="True" />
+          </Node>
+        </State>
+      </Pad>
+    </Pads>
+  </MonoDevelop.Ide.Workbench>
+  <MonoDevelop.Ide.DebuggingService.Breakpoints>
+    <BreakpointStore>
+      <Breakpoint file="/Users/zaitsevyan/Documents/agsxmpp/trunk/agsxmpp/XmppClientConnection.cs" line="743" column="1" />
+    </BreakpointStore>
+  </MonoDevelop.Ide.DebuggingService.Breakpoints>
+  <MonoDevelop.Ide.DebuggingService.PinnedWatches />
+</Properties>

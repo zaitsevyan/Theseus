@@ -1,0 +1,9 @@
+bin
+Debug
+obj
+Release
+stats.sh
+*~
+Theseus/configuration.json
+packages
+!packages/repositories.config
