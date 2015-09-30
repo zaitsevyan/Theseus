@@ -339,7 +339,7 @@ public async Task<Response> Login(Sender sender, String[] args){
  - Fix conflicts on same commands from different Modules. (I think, we should add specify how to identify module's command, maybe some suffixes/prefixes/groups)
  - Localization support
  - Small fixes
-   - Renam command processor to command handler in documentation :)
+   - Rename command processor to command handler in documentation :)
 
 ##### How it was implemented:
 https://www.livecoding.tv/zaitsevyan/videos/ - "Title is **University homework**"
