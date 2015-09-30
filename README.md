@@ -18,6 +18,13 @@ Open Visual Studio and Build it
 ## Mono
 Open MonoDevelope/Xamarin and Build it :)
 
+## Run
+Demo application is included within Theseus project as static Pragram class. 
+ - Run Theseus.exe from binary dictionary
+ - Terminal will be opened. You will see plugin initialization process
+ - Then, default TerminalAdapter will be runned and it begins to handle console input
+ - Write /help command into terminal to print all available options.
+
 ### Release structure
  - **Modules** - directory for comand processors
  - **Adapters** - directory for communication adapters
@@ -330,6 +337,9 @@ public async Task<Response> Login(Sender sender, String[] args){
  - Move accounts subsystem to own module implementation.
  - Allow module sharing - Each module can use another modules api.
  - Fix conflicts on same commands from different Modules. (I think, we should add specify how to identify module's command, maybe some suffixes/prefixes/groups)
+ - Localization support
+ - Small fixes
+   - Renam command processor to command handler in documentation :)
 
 ##### How it was implemented:
 https://www.livecoding.tv/zaitsevyan/videos/ - "Title is **University homework**"
