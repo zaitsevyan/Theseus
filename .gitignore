@@ -5,7 +5,7 @@ Release
 stats.sh
 *~
 *.userprefs
-Theseus/configuration.json
+Runner/configuration.json
 packages
 !packages/repositories.config
 Releases
