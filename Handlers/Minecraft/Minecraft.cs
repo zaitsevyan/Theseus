@@ -18,13 +18,13 @@ using System.Threading;
 using ArgumentsLibrary;
 using ArgumentsLibrary.Exceptions;
 
-namespace Modules {
-    public class Minecraft : Module {
+namespace Handlers {
+    public class Minecraft : Handler {
         private Logger Logger { get; set; }
 
         private System.Threading.CancellationToken CancellationToken { get; set; }
 
-        public Minecraft(Dictionary<String, Object> config, IModuleManager manager)
+        public Minecraft(Dictionary<String, Object> config, IHandlerManager manager)
             : base("Minecraft", config, manager) {
             Logger = Manager.GetLogger(this);
         }

@@ -20,7 +20,6 @@
     <ConsolePause>false</ConsolePause>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>full</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>..\bin</OutputPath>
     <ErrorReport>prompt</ErrorReport>
@@ -44,13 +43,13 @@
     <Compile Include="Response.cs" />
     <Compile Include="Channel.cs" />
     <Compile Include="IPluginManager.cs" />
-    <Compile Include="Module.cs" />
     <Compile Include="IModuleManager.cs" />
     <Compile Include="CommandAttribute.cs" />
     <Compile Include="RolesAttribute.cs" />
     <Compile Include="IAccounts.cs" />
     <Compile Include="Account.cs" />
     <Compile Include="Role.cs" />
+    <Compile Include="Handler.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

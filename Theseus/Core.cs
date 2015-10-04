@@ -23,9 +23,9 @@ namespace Theseus {
         private AdapterManager adapterManager;
 
         /// <summary>
-        /// The module manager.
+        /// The handler manager.
         /// </summary>
-        private ModuleManager moduleManager;
+        private HandlerManager handlerManager;
 
         /// <summary>
         /// The waiting mutex.
@@ -70,9 +70,9 @@ namespace Theseus {
             Logger.Info("Adapter manager initializing...");
             adapterManager = new AdapterManager(this, configuration.Adapters);
             adapterManager.PluginsDirectory = "./Adapters";
-            Logger.Info("Module manager initializing...");
-            moduleManager = new ModuleManager(this, configuration.Modules);
-            moduleManager.PluginsDirectory = "./Modules";
+            Logger.Info("Handler manager initializing...");
+            handlerManager = new HandlerManager(this, configuration.Handlers);
+            handlerManager.PluginsDirectory = "./Handlers";
             Logger.Info("Accounts initializing...");
             accounts = new Accounts(accountsFileName, cancellationTokenSource.Token);
             Logger.Info("Core initialized");
@@ -86,8 +86,8 @@ namespace Theseus {
             adapterManager.LoadPlugins();
             adapterManager.RunPlugins(cancellationTokenSource.Token);
 
-            moduleManager.LoadPlugins();
-            moduleManager.RunPlugins(cancellationTokenSource.Token);
+            handlerManager.LoadPlugins();
+            handlerManager.RunPlugins(cancellationTokenSource.Token);
         }
         /// <summary>
         /// Gets the adapter manager.
@@ -98,11 +98,11 @@ namespace Theseus {
         }
 
         /// <summary>
-        /// Gets the module manager.
+        /// Gets the handler manager.
         /// </summary>
-        /// <returns>The module manager.</returns>
-        public IModuleManager GetModuleManager(){
-            return moduleManager;
+        /// <returns>The handler manager.</returns>
+        public IHandlerManager GetHandlerManager(){
+            return handlerManager;
         }
 
         /// <summary>
@@ -114,7 +114,7 @@ namespace Theseus {
             bool pluginsDisabled = false;
             var plugins = new List<Plugin>();
             plugins.AddRange(adapterManager.Plugins);
-            plugins.AddRange(moduleManager.Plugins);
+            plugins.AddRange(handlerManager.Plugins);
             var counter = 0;
             var abortTries = 5;
             while (!pluginsDisabled && counter <= abortTries + 1) {

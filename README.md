@@ -13,10 +13,10 @@
 
 
 ## Windows
-Open Visual Studio and Build it
+Open Visual Studio and Build All, than run Runner project
 
 ## Mono
-Open MonoDevelope/Xamarin and Build it :)
+Open MonoDevelop/Xamarin and Build All, than run Runner project
 
 ## Run
 Demo application is included within Theseus project as static Pragram class. 
@@ -26,10 +26,10 @@ Demo application is included within Theseus project as static Pragram class.
  - Write /help command into terminal to print all available options.
 
 ### Release structure
- - **Modules** - directory for comand processors
+ - **Handlers** - directory for comand handlers
  - **Adapters** - directory for communication adapters
- - **accounts.json** - simple text DB file for accounts subsystem. It could be replaced by better IAccounts implementation
- - **configuration.json** - adapters and modules configuration
+ - **accounts.json** - simple text DB file for accounts subsystem. It would be replaced by better IAccounts implementation
+ - **configuration.json** - adapter's and handler's configuration
 
 #### accounts.json
 It is json array, every item is one acount record.
@@ -49,7 +49,7 @@ It is json array, every item is one acount record.
 - **Role** -  Account permissions. One of Owner, Admin, Moderator, Normal, Ignore. It could be extended with **Api.Role** enum.
 
 #### configuration.json
-It is json object of two parts: **adapters** and **modules**. Both of it have same structure, but they are used to configurate different plugin types: **adapters** for **Api.Adapter** objects, **modules** for **Api.Module** objects
+It is json object of two parts: **adapters** and **handlers**. Both of it have same structure, but they are used to configurate different plugin types: **adapters** for **Api.Adapter** objects, **handlers** for **Api.Handler** objects
 ~~~{.json}
 {
   "adapters": [
@@ -67,12 +67,12 @@ It is json object of two parts: **adapters** and **modules**. Both of it have sa
       }
     }
   ],
-  "modules": [
+  "handlers": [
     {
       "class": "TheseusControl"
     },
     {
-      "class": "AuthModule"
+      "class": "Auth"
     },
     {
       "class": "Minecraft",
@@ -90,7 +90,7 @@ It is json object of two parts: **adapters** and **modules**. Both of it have sa
 ~~~
 
 ##### Plugin structure
- - **class** - .NET class in assembly. It should be inherited from **Api.Adapter**/**Api.Module**
+ - **class** - .NET class in assembly. It should be inherited from **Api.Adapter**/**Api.Handler**
  - **config** - dictionary, which will be loaded during plugin initialization process. (Config will be visible in plugin constructor)
 
 ##### TerminalAdapter
@@ -112,7 +112,7 @@ Commands:
 
 Please, use **/help** command to discover all other commands.
 
-##### AuthModule
+##### Auth
 Configuration is not required. It uses accounts subsystem to authorizate users. 
 
 Next versions: move accounts subsystem from Core to this plugin and create enviromental for plugin sharing(where one plugin can use another)
@@ -189,12 +189,12 @@ Main class is **Theseus.Core**. It uses plugin managers to initialize, load and 
  - At start, core load plugins and run them in asynchronous tasks.
  - **Api.Adapter** should connect to his destination and handle IO operation. 
  - When new command appears, **Api.Adapter** sends it to **Api.IAdapterManager**  for processing. 
- - **Api.IAdapterManager** uses **Api.IModuleManager** to process command. 
- - Then, command processor(**Api.Module**) returns result to **Api.IModuleManager**, 
+ - **Api.IAdapterManager** uses **Api.IHandlerManager** to process command. 
+ - Then, command handler(**Api.Handler**) returns result to **Api.IHandlerManager**, 
  - which sends it back to **Api.IAdapterManager** 
  - and finally to initial **Api.Adapter**.
  - 
-Modules can run long term operations, for example, to handle alive connection to minecraft server. But, usually it is request-response processing.
+Handlers can run long term operations, for example, to handle alive connection to minecraft server. But, usually it is request-response processing.
 
 Plugins should observe *CancellationToken* to abort their work.
 
@@ -254,12 +254,12 @@ public override void Process(Request request, Response response){
 ~~~
  - When *CancellationToken* is canceled, you should finish your operations as fast as possible and call **Api.Plugin.Finish()** method. If it will not be called, **Theseus.Core** will wait some time and aborts plugin's thread(is not safe).
 
-## How to implement new module (command processor)
- - Create public class inherited from **Api.Module**
+## How to implement new handler
+ - Create public class inherited from **Api.Handler**
  - Implement public constuctor
 ~~~{.cs}
-public class TheseusControl : Module {
-    public TheseusControl(Dictionary<String, Object> config, IModuleManager manager)
+public class TheseusControl : Handler {
+    public TheseusControl(Dictionary<String, Object> config, IHandlerManager manager)
         : base("Theseus Control", config, manager) {
     }
 }
@@ -334,12 +334,7 @@ public async Task<Response> Login(Sender sender, String[] args){
 ~~~
 
 ### TODO
- - Move accounts subsystem to own module implementation.
- - Allow module sharing - Each module can use another modules api.
- - Fix conflicts on same commands from different Modules. (I think, we should add specify how to identify module's command, maybe some suffixes/prefixes/groups)
- - Localization support
- - Small fixes
-   - Rename command processor to command handler in documentation :)
-
-##### How it was implemented:
-https://www.livecoding.tv/zaitsevyan/videos/ - "Title is **University homework**"
+ - Move accounts subsystem to own handler implementation.
+ - Allow plugin sharing - Each plugin can use another plugin's api.
+ - Fix conflicts on same commands from different Handler classes. (I think, we should add specify how to identify handler's command, maybe some suffixes/prefixes/groups)
+ - Culture support

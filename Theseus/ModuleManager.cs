@@ -1,5 +1,5 @@
 ﻿//
-//  File: ModuleManager.cs
+//  File: HandlerManager.cs
 //  Created: 28.9.2015
 //  Author: Yan Zaitsev <yan.zaitsev@gmail.com>
 //
@@ -13,22 +13,22 @@ using System.Globalization;
 
 namespace Theseus {
     /// <summary>
-    /// Module manager.
+    /// Handler manager.
     /// </summary>
-    public sealed class ModuleManager : PluginManager<Module>, IModuleManager {
+    public sealed class HandlerManager : PluginManager<Handler>, IHandlerManager {
         /// <summary>
         /// Default command prefix
         /// </summary>
         private static readonly String COMMAND_PREFIX = "/";
 
         /// <summary>
-        /// Wrapper for command processor
+        /// Wrapper for command handler
         /// </summary>
-        private class CommandProcessor {
+        private class CommandHandler {
             /// <summary>
-            /// Command's module
+            /// Command's handler
             /// </summary>
-            public Module Module;
+            public Handler Handler;
 
             /// <summary>
             /// Role rules.
@@ -46,27 +46,27 @@ namespace Theseus {
             private System.Reflection.MethodInfo MethodInfo;
 
             /// <summary>
-            /// Initializes a new instance of the <see cref="Theseus.ModuleManager+CommandProcessor"/> class.
+            /// Initializes a new instance of the <see cref="Theseus.HandlerManager+CommandHandler"/> class.
             /// </summary>
-            /// <param name="module">Command's module.</param>
+            /// <param name="handler">Command's handler.</param>
             /// <param name="methodInfo">Responsible command method.</param>
             /// <param name="command">Command information.</param>
             /// <param name="roles">Role rules.</param>
-            public CommandProcessor(Module module, System.Reflection.MethodInfo methodInfo, CommandAttribute command, RolesAttribute roles = null) {
-                Module = module;
+            public CommandHandler(Handler handler, System.Reflection.MethodInfo methodInfo, CommandAttribute command, RolesAttribute roles = null) {
+                Handler = handler;
                 Roles = roles ?? new RolesAttribute();
                 MethodInfo = methodInfo;
                 Command = command;
             }
 
             /// <summary>
-            /// Invokes the command processor.
+            /// Invokes the command handler.
             /// </summary>
             /// <returns>Response object.</returns>
             /// <param name="sender">Initial sender.</param>
             /// <param name="args">Arguments.</param>
-            public async Task<Response> InvokeProcessor(Sender sender, String[] args){
-                Task<Response> response = (Task<Response>)MethodInfo.Invoke(Module, new object[]{ sender, args });
+            public async Task<Response> InvokeHandler(Sender sender, String[] args){
+                Task<Response> response = (Task<Response>)MethodInfo.Invoke(Handler, new object[]{ sender, args });
                 return await response;
             }
         }
@@ -74,14 +74,14 @@ namespace Theseus {
         /// <summary>
         /// The allowed commands.
         /// </summary>
-        private Dictionary<String, CommandProcessor> allowedCommands = new Dictionary<String, CommandProcessor>();
+        private Dictionary<String, CommandHandler> allowedCommands = new Dictionary<String, CommandHandler>();
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="Theseus.ModuleManager"/> class.
+        /// Initializes a new instance of the <see cref="Theseus.HandlerManager"/> class.
         /// </summary>
         /// <param name="core">Platworm core.</param>
         /// <param name="configs">Adapter configurations. See <see cref="Theseus.Configuration"/>.</param>
-        public ModuleManager(ICore core, List<Configuration.Plugin> configs)
+        public HandlerManager(ICore core, List<Configuration.Plugin> configs)
             : base(core, configs) {
         }
 
@@ -122,27 +122,27 @@ namespace Theseus {
         /// <summary>
         /// Adds the plugin.
         /// </summary>
-        /// <param name="module">Module.</param>
-        public override void AddPlugin(Module module){
-            base.AddPlugin(module);
-            AddCommandsMap(module);
+        /// <param name="handler">Handler.</param>
+        public override void AddPlugin(Handler handler){
+            base.AddPlugin(handler);
+            AddCommandsMap(handler);
         }
 
         /// <summary>
         /// Removes the plugin.
         /// </summary>
-        /// <param name="module">Module.</param>
-        public override void RemovePlugin(Module module){
-            base.RemovePlugin(module);
-            RemoveCommandsMap(module);
+        /// <param name="handler">Handler.</param>
+        public override void RemovePlugin(Handler handler){
+            base.RemovePlugin(handler);
+            RemoveCommandsMap(handler);
         }
 
         /// <summary>
-        /// Parse module for command processors
+        /// Parse plugin for command handlers
         /// </summary>
-        /// <param name="module">Module.</param>
-        private void AddCommandsMap(Module module){
-            foreach (var method in module.GetType().GetMethods()) {
+        /// <param name="handler">Handler.</param>
+        private void AddCommandsMap(Handler handler){
+            foreach (var method in handler.GetType().GetMethods()) {
                 CommandAttribute commandAttribute = null;
                 RolesAttribute rolesAttribute = null;
                 foreach (var attribute in method.GetCustomAttributes(false)) {
@@ -156,19 +156,19 @@ namespace Theseus {
 
                 if (commandAttribute != null) {
                     allowedCommands[commandAttribute.Name] = 
-                        new CommandProcessor(module, method, commandAttribute, rolesAttribute);
+                        new CommandHandler(handler, method, commandAttribute, rolesAttribute);
                 }
             }
         }
 
         /// <summary>
-        /// Removes parsed commands.
+        /// Removes parsed command handlers.
         /// </summary>
-        /// <param name="module">Module.</param>
-        private void RemoveCommandsMap(Module module){
+        /// <param name="handler">Handler.</param>
+        private void RemoveCommandsMap(Handler handler){
             var keysToRemove = new List<String>();
             foreach (var mapping in allowedCommands) {
-                if (mapping.Value.Module == module) {
+                if (mapping.Value.Handler == handler) {
                     keysToRemove.Add(mapping.Key);
                 }
             }
@@ -233,13 +233,13 @@ namespace Theseus {
             args.RemoveAt(0);
             commandName = commandName.Substring(COMMAND_PREFIX.Length); //Filter command name
 
-            //Looking for command processor
+            //Looking for command handler
             if (allowedCommands.ContainsKey(commandName)) {
-                var processor = allowedCommands[commandName];
+                var handler = allowedCommands[commandName];
 
                 //Check permission
-                if (processor.Roles.IsRoleAllowed(request.Sender.Role)) {
-                    return await processor.InvokeProcessor(request.Sender, args.ToArray());
+                if (handler.Roles.IsRoleAllowed(request.Sender.Role)) {
+                    return await handler.InvokeHandler(request.Sender, args.ToArray());
                 }
                 else {
                     var error = new Response(Channel.Private);
@@ -249,7 +249,7 @@ namespace Theseus {
             }
             else {
                 var error = new Response(Channel.Private);
-                error.SetError("Command processor does not exists");
+                error.SetError("Command handler does not exists");
                 return error;
             }
         }

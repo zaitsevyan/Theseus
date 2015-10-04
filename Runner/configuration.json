@@ -6,20 +6,20 @@
     {
       "class": "JabberAdapter",
       "config": {
-      	"nickname": "nickname",
-        "username": "username without @",
-        "password": "pass",
+      	"nickname": "Theseus",
+        "username": "theseus",
+        "password": "$AvadaKedavra$",
         "server": "xmpp.ru",
-        "conference": "CONFERENCE_NAME@conference.jabber.ru"
+        "conference": "gamecoma@conference.jabber.ru"
       }
     }
   ],
-  "modules": [
+  "handlers": [
     {
       "class": "TheseusControl"
     },
     {
-      "class": "AuthModule"
+      "class": "Auth"
     },
     {
       "class": "Minecraft",
@@ -40,6 +40,15 @@
           "magic": {
             "host": "play.gamecoma.ru",
             "port": 25580
+          },
+          "ttyh-classic": {
+            "host": "server.ttyh.ru",
+            "port": 25565
+          },
+          "ttyh-techno": {
+            "host": "server.ttyh.ru",
+            "port": 25566
+
           }
         }
       }

@@ -11,9 +11,9 @@ using System.Threading.Tasks;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Modules {
-    public class TheseusControl : Module {
-        public TheseusControl(Dictionary<String, Object> config, IModuleManager manager)
+namespace Handlers {
+    public class TheseusControl : Handler {
+        public TheseusControl(Dictionary<String, Object> config, IHandlerManager manager)
             : base("Theseus Control", config, manager) {
         }
 

@@ -34,13 +34,13 @@ namespace Theseus {
             if (!adapter.IsRunning) {
                 return;
             }
-            if (!Core.GetModuleManager().ShouldProcessRequest(request)) {
+            if (!Core.GetHandlerManager().ShouldProcessRequest(request)) {
                 return;
             }
             Logger.Trace("Processing {0} started", request);
             Task.Factory.StartNew(async delegate() {
                 try {
-                    var response = await Core.GetModuleManager().Process(request);
+                    var response = await Core.GetHandlerManager().Process(request);
                     InvokeAdapter(adapter, request, response);
                 }
                 catch (Exception e) {

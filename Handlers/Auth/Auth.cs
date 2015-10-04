@@ -1,5 +1,5 @@
 ﻿//
-//  File: AuthModule.cs
+//  File: Auth.cs
 //  Created: 28.9.2015
 //  Author: Yan Zaitsev <yan.zaitsev@gmail.com>
 //
@@ -11,10 +11,10 @@ using System.Threading.Tasks;
 using System.Collections.Generic;
 
 
-namespace Modules {
-    public class AuthModule : Module {
-        public AuthModule(Dictionary<String, Object> config, IModuleManager manager)
-            : base("Authorization", config, manager) {
+namespace Handlers {
+    public class Auth : Handler {
+        public Auth(Dictionary<String, Object> config, IHandlerManager manager)
+            : base("Auth", config, manager) {
         }
 
         public override void Start(System.Threading.CancellationToken token){

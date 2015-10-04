@@ -36,7 +36,6 @@ namespace ArgumentsLibrary.Builders {
                 throw new ArgumentNullException( "argument" );
             }
 
-            var typ = argument.GetType();
             var expectedType =
                 Type.GetType( String.Format( "ArgumentsLibrary.Argument`1[{0}]",
                     argumentType.ToString() ) );

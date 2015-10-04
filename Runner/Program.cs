@@ -1,6 +1,6 @@
 ﻿//
 //  File: Program.cs
-//  Created: 27.9.2015
+//  Created: 4.10.2015
 //  Author: Yan Zaitsev <yan.zaitsev@gmail.com>
 //
 //  Copyright (c) 2015 @YZaitsev
@@ -10,9 +10,9 @@ using NLog;
 using NLog.Config;
 using NLog.Targets;
 
-namespace Theseus {
+namespace Runner {
     class MainClass {
-        public static void Main(string[] args) {
+        public static void Main(string[] args){
             Console.Title = "Theseus platform";
             //Logging configuration
             // Step 1. Create configuration object 
@@ -43,9 +43,7 @@ namespace Theseus {
             // Step 5. Activate the configuration
             LogManager.Configuration = config;
 
-
-
-            var core = new Core("configuration.json", "accounts.json");
+            var core = new Theseus.Core("configuration.json", "accounts.json");
             core.Start();
             core.Wait();
         }

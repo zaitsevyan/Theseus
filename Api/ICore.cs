@@ -22,10 +22,10 @@ namespace Api {
         IAdapterManager GetAdapterManager();
 
         /// <summary>
-        /// Gets the module manager.
+        /// Gets the handler manager.
         /// </summary>
-        /// <returns>The module manager.</returns>
-        IModuleManager GetModuleManager();
+        /// <returns>The handler manager.</returns>
+        IHandlerManager GetHandlerManager();
 
         /// <summary>
         /// Gets the accountsDB subsystem.

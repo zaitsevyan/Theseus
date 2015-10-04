@@ -37,10 +37,10 @@ namespace Theseus {
         public List<Plugin> Adapters = new List<Plugin>();
 
         /// <summary>
-        /// The module configurations.
+        /// The handler configurations.
         /// </summary>
-        [JsonProperty("modules")]
-        public List<Plugin> Modules = new List<Plugin>();
+        [JsonProperty("handlers")]
+        public List<Plugin> Handlers = new List<Plugin>();
 
         /// <summary>
         /// Reads the file async.

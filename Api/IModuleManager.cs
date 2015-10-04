@@ -1,5 +1,5 @@
 ﻿//
-//  File: IModuleManager.cs
+//  File: IHandlerManager.cs
 //  Created: 28.9.2015
 //  Author: Yan Zaitsev <yan.zaitsev@gmail.com>
 //
@@ -11,9 +11,9 @@ using System.Collections.Generic;
 
 namespace Api {
     /// <summary>
-    /// Module manager interface
+    /// Handler manager interface
     /// </summary>
-    public interface IModuleManager : IPluginManager<Module> {
+    public interface IHandlerManager : IPluginManager<Handler> {
         /// <summary>
         /// Process the specified request.
         /// </summary>
