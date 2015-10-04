@@ -2,7 +2,7 @@
 **Theseus** is a support tool for gaming servers.
 
 ## Requirements
-  - .NET
+  - .NET 4.5
 
 ## Dependencies
 - Core and most of plugins
@@ -19,8 +19,8 @@ Open Visual Studio and Build All, than run Runner project
 Open MonoDevelop/Xamarin and Build All, than run Runner project
 
 ## Run
-Demo application is included within Theseus project as static Pragram class. 
- - Run Theseus.exe from binary dictionary
+Runner application is included within Theseus project. 
+ - Run Runner.exe from binary dictionary
  - Terminal will be opened. You will see plugin initialization process
  - Then, default TerminalAdapter will be runned and it begins to handle console input
  - Write /help command into terminal to print all available options.
