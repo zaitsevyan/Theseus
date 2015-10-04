@@ -1,0 +1,34 @@
+{
+    "adapters": [{
+        "class": "TerminalAdapter",
+        "locale": "en"
+    }],
+    "handlers": [{
+        "class": "TheseusControl"
+    }, {
+        "class": "Auth",
+        "locale": "cs"
+    }, {
+        "class": "Minecraft",
+        "config": {
+            "servers": {
+                "classic": {
+                    "host": "play.gamecoma.ru",
+                    "port": 25565
+                },
+                "tfc": {
+                    "host": "play.gamecoma.ru",
+                    "port": 25575
+                },
+                "techno": {
+                    "host": "play.gamecoma.ru",
+                    "port": 25570
+                },
+                "magic": {
+                    "host": "play.gamecoma.ru",
+                    "port": 25580
+                }
+            }
+        }
+    }]
+}
