@@ -10,6 +10,8 @@ using Api;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Threading;
+using System.Linq;
 
 namespace Theseus {
     /// <summary>
@@ -59,6 +61,26 @@ namespace Theseus {
                 Command = command;
             }
 
+
+            /// <summary>
+            /// Determines whether this instance is responsible for command name the specified commandName.
+            /// </summary>
+            /// <returns><c>true</c> if this instance is responsible for command name the specified commandName; otherwise, <c>false</c>.</returns>
+            /// <param name="commandName">Command name.</param>
+            public bool IsResponsibleForCommandName(String commandName) {
+                var c = Thread.CurrentThread.CurrentCulture;
+                var uic = Thread.CurrentThread.CurrentUICulture;
+                if (Handler.Culture != null) {
+                    Thread.CurrentThread.CurrentCulture = Handler.Culture;
+                    Thread.CurrentThread.CurrentUICulture = Handler.Culture;
+                }
+                bool result = Command.NormalizedNames.Any((name) => String.Equals(name, commandName, StringComparison.CurrentCultureIgnoreCase));
+
+                Thread.CurrentThread.CurrentCulture = c;
+                Thread.CurrentThread.CurrentUICulture = uic;
+                return result;
+            }
+
             /// <summary>
             /// Invokes the command handler.
             /// </summary>
@@ -66,6 +88,13 @@ namespace Theseus {
             /// <param name="sender">Initial sender.</param>
             /// <param name="args">Arguments.</param>
             public async Task<Response> InvokeHandler(Sender sender, String[] args){
+                if(Handler.Culture != null)
+                {
+                    Thread.CurrentThread.CurrentCulture = Handler.Culture;
+                    Thread.CurrentThread.CurrentUICulture = Handler.Culture;
+                    SynchronizationContext.SetSynchronizationContext(new CultureAwareSynchronizationContext());
+                }
+
                 Task<Response> response = (Task<Response>)MethodInfo.Invoke(Handler, new object[]{ sender, args });
                 return await response;
             }
@@ -74,7 +103,7 @@ namespace Theseus {
         /// <summary>
         /// The allowed commands.
         /// </summary>
-        private Dictionary<String, CommandHandler> allowedCommands = new Dictionary<String, CommandHandler>();
+        private List<CommandHandler> allowedCommands = new List<CommandHandler>();
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Theseus.HandlerManager"/> class.
@@ -90,11 +119,11 @@ namespace Theseus {
         /// </summary>
         /// <returns>The allowed commands.</returns>
         /// <param name="sender">Sender. It is used to filter commands by sender permissions role</param>
-        public List<string> GetAllowedCommands(Sender sender){
-            List<String> commands = new List<string>();
-            foreach (var command in allowedCommands) {
-                if (command.Value.Roles.IsRoleAllowed(sender.Role))
-                    commands.Add(command.Key);
+        public List<CommandAttribute> GetAllowedCommands(Sender sender){
+            var commands = new List<CommandAttribute>();
+            foreach (var handler in allowedCommands) {
+                if (handler.Roles.IsRoleAllowed(sender.Role))
+                    commands.Add(handler.Command);
             }
             return commands;
         }
@@ -103,11 +132,19 @@ namespace Theseus {
         /// Gets the information about command.
         /// </summary>
         /// <returns>The command information.</returns>
-        /// <param name="command">Command.</param>
-        public CommandAttribute GetCommandInfo(string command){
-            if (allowedCommands.ContainsKey(command))
-                return allowedCommands[command].Command;
-            return null;
+        /// <param name="commandName">Command name.</param>
+        public CommandAttribute GetCommandInfo(String commandName){
+            return GetCommandHandler(commandName)?.Command;
+        }
+
+        /// <summary>
+        /// Gets the command handler.
+        /// </summary>
+        /// <returns>The command handler.</returns>
+        /// <param name="commandName">Command name.</param>
+        private CommandHandler GetCommandHandler(String commandName) {
+            commandName = commandName.RemoveDiacritics();
+            return allowedCommands.FirstOrDefault((handler) => handler.IsResponsibleForCommandName(commandName));
         }
 
         /// <summary>
@@ -155,8 +192,7 @@ namespace Theseus {
                 }
 
                 if (commandAttribute != null) {
-                    allowedCommands[commandAttribute.Name] = 
-                        new CommandHandler(handler, method, commandAttribute, rolesAttribute);
+                    allowedCommands.Add(new CommandHandler(handler, method, commandAttribute, rolesAttribute));
                 }
             }
         }
@@ -166,15 +202,7 @@ namespace Theseus {
         /// </summary>
         /// <param name="handler">Handler.</param>
         private void RemoveCommandsMap(Handler handler){
-            var keysToRemove = new List<String>();
-            foreach (var mapping in allowedCommands) {
-                if (mapping.Value.Handler == handler) {
-                    keysToRemove.Add(mapping.Key);
-                }
-            }
-            foreach (var key in keysToRemove) {
-                allowedCommands.Remove(key);
-            }
+            allowedCommands.RemoveAll((info) => info.Handler == handler);
         }
 
         /// <summary>
@@ -212,7 +240,7 @@ namespace Theseus {
                     if (nesting.Count == 0) { //start ignoring
                         nesting.Push(element);
                     }
-                    else if (nesting.Peek() == element) {
+                    else if (String.Equals(nesting.Peek(), element, StringComparison.InvariantCulture)) {
                         nesting.Pop();
                         if (nesting.Count > 0) { //continue ignoring
                             currentElement += element;
@@ -234,22 +262,20 @@ namespace Theseus {
             commandName = commandName.Substring(COMMAND_PREFIX.Length); //Filter command name
 
             //Looking for command handler
-            if (allowedCommands.ContainsKey(commandName)) {
-                var handler = allowedCommands[commandName];
+            var handler = GetCommandHandler(commandName);
+            if (handler == null) {
+                var error = new Response(Channel.Private);
+                error.SetError(TheseusStrings.CommandNotFound);
+                return error;
+            }
 
-                //Check permission
-                if (handler.Roles.IsRoleAllowed(request.Sender.Role)) {
-                    return await handler.InvokeHandler(request.Sender, args.ToArray());
-                }
-                else {
-                    var error = new Response(Channel.Private);
-                    error.SetError("You aren't permitted to use this command");
-                    return error;
-                }
+            //Check permission
+            if (handler.Roles.IsRoleAllowed(request.Sender.Role)) {
+                return await handler.InvokeHandler(request.Sender, args.ToArray());
             }
             else {
                 var error = new Response(Channel.Private);
-                error.SetError("Command handler does not exists");
+                error.SetError(TheseusStrings.CommandPermissionsError);
                 return error;
             }
         }

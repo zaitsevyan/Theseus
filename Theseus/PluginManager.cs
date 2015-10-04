@@ -13,12 +13,18 @@ using System.Threading;
 using System.Threading.Tasks;
 using NLog;
 using System.Reflection;
+using System.Globalization;
 
 namespace Theseus {
     /// <summary>
     /// Plugin manager.
     /// </summary>
     public class PluginManager<T> : IPluginManager<T> where T : Plugin {
+        /// <summary>
+        /// Default culture
+        /// </summary>
+        protected static CultureInfo DefaultCulture = new CultureInfo("en");
+
         /// <summary>
         /// List of loaded plugins.
         /// </summary>
@@ -116,7 +122,7 @@ namespace Theseus {
         protected Type LookupPlugin(String name){
             foreach (var assembly in Assemblies) {
                 foreach (var type in assembly.GetExportedTypes()) {
-                    if(type.Name == name && type.IsSubclassOf(typeof(T)))
+                    if (type.Name == name && type.IsSubclassOf(typeof(T)))
                         return type;
                 }
             }
@@ -126,11 +132,15 @@ namespace Theseus {
         /// <summary>
         /// Initializes the plugins from configuration.
         /// </summary>
-        private void InitializePlugins() {
+        private void InitializePlugins(){
             foreach (var plugin in Configs) {
                 var type = LookupPlugin(plugin.Class);
                 if (type != null) {
-                   AddPlugin((T)Activator.CreateInstance(type, new object[]{plugin.Config, this}));
+                    T instance = (T)Activator.CreateInstance(type, new object[]{ plugin.Config, this });
+                    if (plugin.Locale != null) {
+                        instance.Culture = new CultureInfo(plugin.Locale);
+                    }
+                    AddPlugin(instance);
                 }
                 else {
                     Logger.Error("Cannot find {0} plugin", plugin.Class);
@@ -180,6 +190,10 @@ namespace Theseus {
         /// <param name="token">Cancellation token.</param>
         protected void Run(T plugin, CancellationToken token){
             Task.Factory.StartNew(() => {
+
+                    Thread.CurrentThread.CurrentCulture = plugin.Culture ?? DefaultCulture;
+                    Thread.CurrentThread.CurrentUICulture = plugin.Culture ?? DefaultCulture;
+                    SynchronizationContext.SetSynchronizationContext(new CultureAwareSynchronizationContext());
                     Logger.Info("{0} starting...", plugin);
                     plugin.Start(token);
                 });
@@ -191,11 +205,11 @@ namespace Theseus {
         /// <returns>The resolved assembly.</returns>
         /// <param name="sender">Sender.</param>
         /// <param name="args">Resolve event arguments.</param>
-        private Assembly AssemblyResolver(object sender, ResolveEventArgs args)
-        {
+        private Assembly AssemblyResolver(object sender, ResolveEventArgs args){
             string folderPath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
             string assemblyPath = Path.Combine(folderPath, PluginsDirectory, new AssemblyName(args.Name).Name + ".dll");
-            if (File.Exists(assemblyPath) == false) return null;
+            if (File.Exists(assemblyPath) == false)
+                return null;
             Assembly assembly = Assembly.LoadFrom(assemblyPath);
             return assembly;
         }

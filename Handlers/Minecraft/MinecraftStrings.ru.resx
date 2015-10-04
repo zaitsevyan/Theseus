@@ -1,0 +1,91 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+    <resheader name="resmimetype">
+        <value>text/microsoft-resx</value>
+    </resheader>
+    <resheader name="version">
+        <value>2.0</value>
+    </resheader>
+    <resheader name="reader">
+        <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    </resheader>
+    <resheader name="writer">
+        <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    </resheader>
+    <data name="Servers.Command">
+        <value>сервера</value>
+    </data>
+    <data name="Servers.Usage">
+        <value>
+        </value>
+    </data>
+    <data name="Servers.Note">
+        <value>Список серверов</value>
+    </data>
+    <data name="Servers.PrintTitle">
+        <value>Сервера</value>
+    </data>
+    <data name="Players.Command">
+        <value>онлайн</value>
+    </data>
+    <data name="Players.Usage">
+        <value>[сервер] [сервер] ...</value>
+    </data>
+    <data name="Players.Note">
+        <value>Текущий онлайн [сервер]'а. Если не указано, показывает онлайн всех серверов</value>
+    </data>
+    <data name="Players.PrintTitle">
+        <value>Онлайн</value>
+    </data>
+    <data name="Ping">
+        <value>Пинг</value>
+    </data>
+    <data name="ConnectionError">
+        <value>Ошибка соединения</value>
+    </data>
+    <data name="ParseError">
+        <value>Ошибка разбора данных</value>
+    </data>
+    <data name="Ban.Command">
+        <value>бан</value>
+    </data>
+    <data name="Ban.Usage">
+        <value>
+            <value>[--time=1d] &lt;имя игрока&gt; </value>
+        </value>
+    </data>
+    <data name="Ban.Ok">
+        <value>Игрок {0} забанен: {1}</value>
+        <comment>
+            {0} - имя игрока, {1} - время
+        </comment>
+    </data>
+    <data name="Ban.Note">
+        <value>Забанить &lt;имя игрока&gt;. Модификаторы времени: Y, M, W, d, h, m</value>
+    </data>
+    <data name="Unban.Command">
+        <value>Разбанить</value>
+
+    </data>
+    <data name="Unban.Usage">
+        <value> &lt;имя игрока&gt; </value>
+    </data>
+    <data name="Unban.Note">
+        <value>Разбанить &lt;имя игрока&gt;</value>
+    </data>
+    <data name="Unban.Ok">
+        <value>"Игрок {0} разбанен"</value>
+        <comment>
+            {0} - игрок
+        </comment>
+    </data>
+    <data name="PlayerNameMissing">
+        <value>Имя игрока не указано</value>
+    </data>
+    <data name="OptionsParseError">
+        <value>Не могу разобрать опции команды</value>
+    </data>
+    <data name="Time.Forever">
+        <value>навсегда</value>
+    </data>
+</root>

@@ -27,6 +27,9 @@ namespace Theseus {
             [JsonProperty("class")]
             public string Class = null;
 
+            [JsonProperty("locale")]
+            public string Locale = null;
+
             [JsonProperty("config")]
             public Dictionary<String, Object> Config = new Dictionary<string, object>();
         }

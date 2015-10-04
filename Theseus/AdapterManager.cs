@@ -9,6 +9,8 @@ using System;
 using Api;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using System.Threading;
+using System.Globalization;
 
 namespace Theseus {
     /// <summary>
@@ -37,17 +39,21 @@ namespace Theseus {
             if (!Core.GetHandlerManager().ShouldProcessRequest(request)) {
                 return;
             }
+
             Logger.Trace("Processing {0} started", request);
             Task.Factory.StartNew(async delegate() {
-                try {
-                    var response = await Core.GetHandlerManager().Process(request);
-                    InvokeAdapter(adapter, request, response);
-                }
-                catch (Exception e) {
-                    Logger.Error(e);
-                    InvokeAdapter(adapter, request, new Response(Channel.Private));
-                }
-            });
+                    try {
+                        Thread.CurrentThread.CurrentCulture = adapter.Culture ?? DefaultCulture;
+                        Thread.CurrentThread.CurrentUICulture = adapter.Culture ?? DefaultCulture;
+                        SynchronizationContext.SetSynchronizationContext(new CultureAwareSynchronizationContext());
+                        var response = await Core.GetHandlerManager().Process(request);
+                        InvokeAdapter(adapter, request, response);
+                    }
+                    catch (Exception e) {
+                        Logger.Error(e);
+                        InvokeAdapter(adapter, request, new Response(Channel.Private));
+                    }
+                });
         }
 
         /// <summary>
@@ -63,7 +69,7 @@ namespace Theseus {
             else {
                 Logger.Trace("Processing {0} => {1} ended", request, response);
             }
-            if (adapter.IsRunning && request!=null && !response.IsEmpty)
+            if (adapter.IsRunning && request != null && !response.IsEmpty)
                 adapter.Process(request, response);
         }
     }

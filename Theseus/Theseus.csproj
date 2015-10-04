@@ -42,10 +42,14 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="AdapterManager.cs" />
     <Compile Include="PluginManager.cs" />
-    <Compile Include="ModuleManager.cs" />
     <Compile Include="Accounts.cs" />
     <Compile Include="Configuration.cs" />
     <Compile Include="Core.cs" />
+    <Compile Include="HandlerManager.cs" />
+    <Compile Include="TheseusStrings.Designer.cs">
+      <DependentUpon>TheseusStrings.resx</DependentUpon>
+    </Compile>
+    <Compile Include="CultureAwareSynchronizationContext.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
@@ -56,5 +60,14 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="TheseusStrings.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>TheseusStrings.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="TheseusStrings.ru.resx">
+      <LastGenOutput>TheseusStrings.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
   </ItemGroup>
 </Project>

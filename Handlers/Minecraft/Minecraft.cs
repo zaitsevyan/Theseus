@@ -35,15 +35,17 @@ namespace Handlers {
             token.Register(Finish);
         }
 
-        [Command("servers", "", "List of configured servers")]
+        [Command("Servers_Command", "Servers_Usage", "Servers_Note", 
+            ResourceType = typeof(MinecraftStrings))]
         [Roles(Role.Normal)]
         public Task<Response> Servers(Sender sender, String[] args){
             var response = new Response(Channel.Same);
-            response.SetMessage("Servers: {0}", String.Join(", ", GetServersList()));
+            response.SetMessage("{1}: {0}", String.Join(", ", GetServersList()), MinecraftStrings.Servers_PrintTitle);
             return Task.FromResult(response);
         }
 
-        [Command("players", "[server]", "Current [server] online. If [server] is not defined, returns online for every configured server")]
+        [Command("Players_Command", "Players_Usage", "Players_Note",
+            ResourceType = typeof(MinecraftStrings))]
         [Roles(Role.Normal)]
         public async Task<Response> Players(Sender sender, String[] args){
             var sb = new StringBuilder();
@@ -56,12 +58,14 @@ namespace Handlers {
                 servers = new List<string>(args);
             }
             if (servers.Count > 1) {
-                sb.AppendLine("Online");
+                sb.AppendLine(MinecraftStrings.Players_PrintTitle);
                 prefix = "    ";
             }
             var tasks = new List<Task<String>>();
             foreach (var serverName in servers) {
                 var server = (Config["servers"] as Dictionary<String, Object>)[serverName] as Dictionary<String, Object>;
+                if (server == null)
+                    continue;
                 var task = PingServer(server, serverName, prefix);
                 tasks.Add(task);
             }
@@ -80,19 +84,21 @@ namespace Handlers {
             try {
                 var host = server["host"] as String;
                 var port = short.Parse(server["port"].ToString());
-                Logger.Debug("Pinging {0}[{1}:{2}]...", serverName, host, port);
+                Logger.Debug("{3} {0}[{1}:{2}]...", serverName, host, port, MinecraftStrings.Ping);
+                Logger.Debug("Start Thread = {0}, Culture = {1}", Thread.CurrentThread.ManagedThreadId, Thread.CurrentThread.CurrentCulture);
                 var ping = await new MCServerPing.ServerPing(host, port, CancellationToken).Ping();
+                Logger.Debug("End Thread = {0}, Culture = {1}", Thread.CurrentThread.ManagedThreadId, Thread.CurrentThread.CurrentCulture);
 
                 sb.AppendFormat("{0}/{1} - {2}", ping.Players.Online, ping.Players.Max, ping.Motd);
                 sb.AppendLine();
             }
             catch (SocketException e) {
                 Logger.Trace(e);
-                sb.AppendLine("Connection error");
+                sb.AppendLine(MinecraftStrings.ConnectionError);
             }
             catch (JsonReaderException e) {
                 Logger.Trace(e);
-                sb.AppendLine("Parsing error");
+                sb.AppendLine(MinecraftStrings.ParseError);
             }
             return sb.ToString();
         }
@@ -101,17 +107,18 @@ namespace Handlers {
             return new List<String>((Config["servers"] as Dictionary<String, Object>).Keys);
         }
 
-        [Command("unban", "<player>", "Unban <player>")]
+        [Command("Unban_Command", "Unban_Usage", "Unban_Note",
+            ResourceType = typeof(MinecraftStrings))]
         [Roles(Role.Moderator)]
         public Task<Response> Unban(Sender sender, String[] args){
             if (args.Length != 1) {
                 var response = new Response(Channel.Private);
-                response.SetError("Player name missed");
+                response.SetError(MinecraftStrings.PlayerNameMissing);
                 return Task.FromResult(response);
             }
             else {
                 var response = new Response(Channel.Same);
-                response.SetMessage("Player {0} unbaned", args[0]);
+                response.SetMessage(MinecraftStrings.Unban_Ok, args[0]);
                 return Task.FromResult(response);
             }
         }
@@ -119,7 +126,8 @@ namespace Handlers {
 
         private Arguments banArguments;
 
-        [Command("ban", "[--time=1d] <player>", "Ban <player>. Time modifiers are Y, M, w, d, h, m")]
+        [Command("Ban_Command", "Ban_Usage", "Ban_Note",
+            ResourceType = typeof(MinecraftStrings))]
         [Roles(Role.Moderator)]
         public Task<Response> Ban(Sender sender, String[] args){
             SetupBanArguments();
@@ -129,24 +137,24 @@ namespace Handlers {
                 var plain = new List<String>(options.GetPlainArguments<String>());
                 if (plain.Count != 1) {
                     var response = new Response(Channel.Private);
-                    response.SetError("Player name missed");
+                    response.SetError(MinecraftStrings.PlayerNameMissing);
                     return Task.FromResult(response);
                 }
                 else {
                     var player = plain[0];
                     var time = Time.Forever;
-                    if(options.IsOptionSet("time")) {
+                    if (options.IsOptionSet("time")) {
                         time = options.GetOptionValue<Time>("time");
                     }
                     var response = new Response(Channel.Same);
-                    response.SetMessage("Player {0} banned: {1}", player, time);
+                    response.SetMessage(MinecraftStrings.Ban_Ok, player, time);
                     return Task.FromResult(response);
                 }
             }
             catch (ArgumentsException e) {
                 Logger.Trace(e);
                 var response = new Response(Channel.Private);
-                response.SetError("Cannot parse command options");
+                response.SetError(MinecraftStrings.OptionsParseError);
                 return Task.FromResult(response);
             }
         }
@@ -189,7 +197,7 @@ namespace Handlers {
                             time = time.Add(TimeSpan.FromDays(360 * number));
                         else if (c == 'M')
                             time = time.Add(TimeSpan.FromDays(30 * number));
-                        else if (c == 'w')
+                        else if (c == 'W')
                             time = time.Add(TimeSpan.FromDays(7 * number));
                         else if (c == 'd')
                             time = time.Add(TimeSpan.FromDays(number));
@@ -207,26 +215,26 @@ namespace Handlers {
 
             public override string ToString(){
                 if (this.Interval == Forever.Interval)
-                    return "forever";
+                    return MinecraftStrings.Time_Forever;
                 else {
                     List<String> parts = new List<String>();
                     var time = Interval;
                     if (time.TotalDays > 360) {
-                        parts.Add(String.Format("{0} years", time.Days / 360));
+                        parts.Add(String.Format("{0} Y", time.Days / 360));
                         time = TimeSpan.FromDays(time.Days % 360);
                     }
                     if (time.TotalDays > 30) {
-                        parts.Add(String.Format("{0} monthes", time.Days / 30));
+                        parts.Add(String.Format("{0} M", time.Days / 30));
                         time = TimeSpan.FromDays(time.Days % 30);
                     }
                     if (time.Days > 0) {
-                        parts.Add(String.Format("{0} days", time.Days));
+                        parts.Add(String.Format("{0} d", time.Days));
                     }
                     if (time.Hours > 0) {
-                        parts.Add(String.Format("{0} hours", time.Hours));
+                        parts.Add(String.Format("{0} h", time.Hours));
                     }
                     if (time.Minutes > 0) {
-                        parts.Add(String.Format("{0} minutes", time.Minutes));
+                        parts.Add(String.Format("{0} m", time.Minutes));
                     }
                     return String.Join(" ", parts);
                 }

@@ -23,7 +23,7 @@ Runner application is included within Theseus project.
  - Run Runner.exe from binary dictionary
  - Terminal will be opened. You will see plugin initialization process
  - Then, default TerminalAdapter will be runned and it begins to handle console input
- - Write /help command into terminal to print all available options.
+ - Type **/?** command into terminal to print all available options.
 
 ### Release structure
  - **Handlers** - directory for comand handlers
@@ -58,6 +58,7 @@ It is json object of two parts: **adapters** and **handlers**. Both of it have s
     },
     {
       "class": "JabberAdapter",
+      "locale": "ru"
       "config": {
       	"nickname": "Theseus",
         "username": "theseus",
@@ -72,7 +73,8 @@ It is json object of two parts: **adapters** and **handlers**. Both of it have s
       "class": "TheseusControl"
     },
     {
-      "class": "Auth"
+      "class": "Auth",
+      "locale": "cs"
     },
     {
       "class": "Minecraft",
@@ -91,6 +93,7 @@ It is json object of two parts: **adapters** and **handlers**. Both of it have s
 
 ##### Plugin structure
  - **class** - .NET class in assembly. It should be inherited from **Api.Adapter**/**Api.Handler**
+ - **locale** - .NET culture identifier. It will be used as *Thread.CurrentThread.CurrentCulture*, when plugin's methods would be called. Handler's locale override caller(adapter) locale.
  - **config** - dictionary, which will be loaded during plugin initialization process. (Config will be visible in plugin constructor)
 
 ##### TerminalAdapter
@@ -254,7 +257,9 @@ public override void Process(Request request, Response response){
 ~~~
  - When *CancellationToken* is canceled, you should finish your operations as fast as possible and call **Api.Plugin.Finish()** method. If it will not be called, **Theseus.Core** will wait some time and aborts plugin's thread(is not safe).
 
-## How to implement new handler
+## How to implement new command handler
+ Note: When command handler is invoked, required *CultureInfo* is set in *Thread.CurrentThread*. Custom *SynchronizationContext* is used to hold same CultureInfo through async/await calls. Command are looked up with diacritic and case ignore options, so, if your command is **přihlásitse**, you could type **/prihlAsItse** and it will work correctly.
+
  - Create public class inherited from **Api.Handler**
  - Implement public constuctor
 ~~~{.cs}
@@ -332,9 +337,17 @@ public async Task<Response> Login(Sender sender, String[] args){
     }
 }
 ~~~
+ - You can localize command with yours resources file. See **TheseusControl** project, there are exists TheseusControlStrings.resx, TheseusControlStrings.Designer.cs, TheseusControlStrings.ru.resx. When you define command attribute, you could set ResourseType with yours resources class type and use localization keys for **name**, **usage** and **note** params.
+ ~~~{.cs}
+ [Command("Shutdown_Command", "Shutdown_Usage", "Shutdown_Command", ResourceType = typeof(TheseusControlStrings))]
+ [Roles(Role.Owner)]
+ public Task<Response> Shutdown(Sender sender, String[] args){
+    Manager.GetCore().Stop();
+    return Task.FromResult<Response>(null);
+ }
+ ~~~
 
 ### TODO
  - Move accounts subsystem to own handler implementation.
  - Allow plugin sharing - Each plugin can use another plugin's api.
  - Fix conflicts on same commands from different Handler classes. (I think, we should add specify how to identify handler's command, maybe some suffixes/prefixes/groups)
- - Culture support

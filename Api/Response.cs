@@ -54,8 +54,9 @@ namespace Api {
         /// Gets the string line.
         /// </summary>
         /// <value>String message. If response contains error, it will be prefixed with "Error:"</value>
-        public String Info { get { return IsError ? "Error: " + Error : Message;
-            } }
+        public String Info { get { return IsError ? 
+                String.Format(ApiStrings.Response_Error, Error) : 
+                String.Format(ApiStrings.Response_Ok, Message); } }
 
         /// <summary>
         /// Gets a value indicating whether this response is empty.
@@ -85,7 +86,7 @@ namespace Api {
         /// <param name="args">Arguments.</param>
         public void SetMessage(String format, params Object[] args){
             data = String.Format(format, args);
-            data = data.Trim(' ','\n','\r','\t');
+            data = data.Trim(' ', '\n', '\r', '\t');
             Status = ResponseStatus.OK;
         }
 
@@ -96,7 +97,7 @@ namespace Api {
         /// <param name="args">Arguments.</param>
         public void SetError(String format, params Object[] args){
             data = String.Format(format, args);
-            data = data.Trim(' ','\n','\r','\t');
+            data = data.Trim(' ', '\n', '\r', '\t');
             Status = ResponseStatus.Error;
         }
 

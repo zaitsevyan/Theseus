@@ -61,7 +61,7 @@ namespace ArgumentsLibrary {
         /// otherwise, <c>false</c>.
         /// </returns>
         public bool Equals( OptionAlias other ) {
-            return other.Alias == Alias && other.Type == Type;
+            return String.Equals(other.Alias, Alias, StringComparison.InvariantCulture) && other.Type == Type;
         }
 
         /// <summary>

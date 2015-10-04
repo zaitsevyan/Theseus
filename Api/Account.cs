@@ -60,7 +60,7 @@ namespace Api {
         /// <param name="id">Account identifier.</param>
         /// <param name="password">Account Password.</param>
         public bool CanAuthWith(String id, String password){
-            return ID == id && Password == password;
+            return ID == id && String.Equals(Password, password, StringComparison.CurrentCulture);
         }
 
         public override string ToString(){

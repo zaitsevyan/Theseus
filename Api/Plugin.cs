@@ -9,6 +9,7 @@ using System;
 using System.Threading;
 using System.Collections.Generic;
 using System.Reflection;
+using System.Globalization;
 
 namespace Api {
     /// <summary>
@@ -44,6 +45,12 @@ namespace Api {
         public Thread MainLoopThread { get; private set; }
 
         /// <summary>
+        /// Gets or sets the adapter destination locale.
+        /// </summary>
+        /// <value>The culture.</value>
+        public CultureInfo Culture { get; set; }
+
+        /// <summary>
         /// Initializes a new instance of the <see cref="Api.Plugin"/> class.
         /// </summary>
         /// <param name="name">Name.</param>
@@ -59,7 +66,7 @@ namespace Api {
         /// If you override this method, you should call base implementation!.
         /// </summary>
         /// <param name="token">Cancellation token.</param>
-        public virtual void Start(CancellationToken token) {
+        public virtual void Start(CancellationToken token){
             IsRunning = true;
             MainLoopThread = Thread.CurrentThread;
         }
@@ -68,7 +75,7 @@ namespace Api {
         /// Finish this plugin.
         /// If cancellation token is cancelled, you should abort your operations and call this method.
         /// </summary>
-        public virtual void Finish() {
+        public virtual void Finish(){
             IsRunning = false;
         }
 

@@ -1,10 +1,12 @@
 {
   "adapters": [
     {
-      "class": "TerminalAdapter"
+      "class": "TerminalAdapter",
+      "locale": "cs"
     },
     {
       "class": "JabberAdapter",
+      "locale": "ru",
       "config": {
       	"nickname": "Theseus",
         "username": "theseus",
@@ -40,15 +42,6 @@
           "magic": {
             "host": "play.gamecoma.ru",
             "port": 25580
-          },
-          "ttyh-classic": {
-            "host": "server.ttyh.ru",
-            "port": 25565
-          },
-          "ttyh-techno": {
-            "host": "server.ttyh.ru",
-            "port": 25566
-
           }
         }
       }

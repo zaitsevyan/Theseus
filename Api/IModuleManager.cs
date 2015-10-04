@@ -32,7 +32,7 @@ namespace Api {
         /// </summary>
         /// <returns>The allowed commands.</returns>
         /// <param name="sender">Sender. It is used to filter commands by sender permissions role</param>
-        List<String> GetAllowedCommands(Sender sender);
+        List<CommandAttribute> GetAllowedCommands(Sender sender);
 
         /// <summary>
         /// Gets the information about command.

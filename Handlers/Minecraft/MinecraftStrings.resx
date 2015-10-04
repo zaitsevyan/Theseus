@@ -1,0 +1,90 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+    <resheader name="resmimetype">
+        <value>text/microsoft-resx</value>
+    </resheader>
+    <resheader name="version">
+        <value>2.0</value>
+    </resheader>
+    <resheader name="reader">
+        <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    </resheader>
+    <resheader name="writer">
+        <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    </resheader>
+    <data name="Servers.Command">
+        <value>servers</value>
+    </data>
+    <data name="Servers.Usage">
+        <value>
+        </value>
+    </data>
+    <data name="Servers.Note">
+        <value>List of servers</value>
+    </data>
+    <data name="Servers.PrintTitle">
+        <value>Servers</value>
+    </data>
+    <data name="Players.Command">
+        <value>players</value>
+    </data>
+    <data name="Players.Usage">
+        <value>[server] [server] ...</value>
+    </data>
+    <data name="Players.Note">
+        <value>Current [server]'s online. If no arguments, returns online for every server</value>
+    </data>
+    <data name="Players.PrintTitle">
+        <value>Players</value>
+    </data>
+    <data name="Ping">
+        <value>Ping</value>
+    </data>
+    <data name="ConnectionError">
+        <value>Connection error</value>
+    </data>
+    <data name="ParseError">
+        <value>Parse error</value>
+    </data>
+    <data name="Ban.Command">
+        <value>ban</value>
+    </data>
+    <data name="Ban.Usage">
+        <value>
+            <value>[--time=1d] &lt;player&gt; </value>
+        </value>
+    </data>
+    <data name="Ban.Ok">
+        <value>Player {0} banned: {1}</value>
+        <comment>
+            {0} - player, {1} - time
+        </comment>
+    </data>
+    <data name="Ban.Note">
+        <value>Ban &lt;player&gt;. Time modifiers are Y, M, W, d, h, m</value>
+    </data>
+    <data name="Unban.Command">
+        <value>unban</value>
+    </data>
+    <data name="Unban.Usage">
+        <value> &lt;player&gt; </value>
+    </data>
+    <data name="Unban.Note">
+        <value>Unban &lt;player&gt;</value>
+    </data>
+    <data name="Unban.Ok">
+        <value>"Player {0} unbaned"</value>
+        <comment>
+            {0} - player
+        </comment>
+    </data>
+    <data name="PlayerNameMissing">
+        <value>Player name is not defined</value>
+    </data>
+    <data name="OptionsParseError">
+        <value>Cannot parse command options</value>
+    </data>
+    <data name="Time.Forever">
+        <value>forever</value>
+    </data>
+</root>

@@ -7,6 +7,7 @@
 //
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 
 namespace Api {
     /// <summary>
@@ -36,7 +37,7 @@ namespace Api {
         /// <param name="request">Initial request.</param>
         /// <param name="response">Processed response.</param>
         /// <summary>It will not be called, if response is null or empty</summary>
-        public virtual void Process(Request request, Response response) {
+        public virtual void Process(Request request, Response response){
         }
     }
 }

@@ -22,7 +22,8 @@ namespace Handlers {
             token.Register(Finish);
         }
 
-        [Command("whoami", "", "Print your name and role")]
+        [Command("Whoami_Command", "Whoami_Usage", "Whoami_Note", 
+            ResourceType = typeof(AuthStrings))]
         [Roles(Role.Ignore)]
         public Task<Response> WhoAmI(Sender sender, String[] args){
             var response = new Response(Channel.Same);
@@ -30,12 +31,13 @@ namespace Handlers {
             return Task.FromResult(response);
         }
 
-        [Command("login", "<username> <password>", "Login as another user")]
+        [Command("Login_Command", "Login_Usage", "Login_Note", 
+            ResourceType = typeof(AuthStrings))]
         [Roles(Role.Ignore)]
         public async Task<Response> Login(Sender sender, String[] args){
             if (args.Length != 2) {
                 var response = new Response(Channel.Private);
-                response.SetError("Incorrect options, /login :username :password");
+                response.SetError(AuthStrings.Login_ArgsError);
                 return response;
             }
 
@@ -45,19 +47,19 @@ namespace Handlers {
             if (account != null) {
                 if (account.Role <= sender.Role) {
                     var response = new Response(Channel.Private);
-                    response.SetMessage("Your current role is better than authorized!");
+                    response.SetMessage(AuthStrings.Login_BetterRoleWarning);
                     return response;
                 }
                 else {
                     sender.Account = account;
                     var response = new Response(Channel.Private);
-                    response.SetMessage("You are logger as {0} now.", account.Role);
+                    response.SetMessage(AuthStrings.Login_Ok, account.Role);
                     return response;
                 }
             }
             else {
                 var response = new Response(Channel.Private);
-                response.SetError("Incorrect username or/and password!");
+                response.SetError(AuthStrings.Login_InvalidLoginPass);
                 return response;
             }
         }

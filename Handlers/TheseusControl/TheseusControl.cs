@@ -10,6 +10,8 @@ using Api;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 using System.Text;
+using System.Resources;
+using System.Linq;
 
 namespace Handlers {
     public class TheseusControl : Handler {
@@ -22,45 +24,50 @@ namespace Handlers {
             token.Register(Finish);
         }
 
-        [Command("shutdown", "", "Stop Theseus core")]
+        [Command("Shutdown_Command", "Shutdown_Usage", "Shutdown_Command",
+            ResourceType = typeof(TheseusControlStrings))]
         [Roles(Role.Owner)]
         public Task<Response> Shutdown(Sender sender, String[] args){
             Manager.GetCore().Stop();
             return Task.FromResult<Response>(null);
         }
 
-        [Command("help", "[command1] ... [commandN]", "Get help about all commands")]
+        [Command(new String[]{ "?", "Help_Command" }, "Help_Usage", "Help_Note",
+            ResourceType = typeof(TheseusControlStrings))]
         [Roles(Role.Normal)]
         public Task<Response> Help(Sender sender, String[] args){
-            List<String> commands;
+            List<CommandAttribute> commands;
             if (args.Length == 0)
                 commands = Manager.GetAllowedCommands(sender);
             else
-                commands = new List<string>(args);
+                commands = (from name in args
+                                        select Manager.GetCommandInfo(name)).ToList();
             StringBuilder sb = new StringBuilder();
             if (commands.Count > 1) {
-                sb.AppendLine("Help");
+                sb.AppendLine(TheseusControlStrings.Help_PrintTitle);
             }
-            foreach (var commandName in commands) {
-                var command = Manager.GetCommandInfo(commandName);
-
-                // Print command name
-                sb.AppendFormat("    {0}{1}", Manager.GetCommandPrefix(), command.Name);
-
-                // Print usage
-                if (command.Usage.Length > 0) {
-                    sb.AppendFormat(" {0}", command.Usage);
-                }
-
-                // Print description
-                if (command.Description.Length > 0) {
-                    sb.AppendFormat(" - {0}", command.Description);
-                }
-                sb.AppendLine();
+            foreach (var command in commands) {
+                PrintCommandInfo(command, sb);
             }
             var response = new Response(Channel.Same);
             response.SetMessage(sb.ToString());
             return Task.FromResult<Response>(response);
+        }
+
+        private void PrintCommandInfo(CommandAttribute command, StringBuilder sb){
+            // Print command name
+            sb.AppendFormat("    {0}", command.NamesWithPrefix(Manager.GetCommandPrefix()));
+
+            // Print usage
+            if (command.Usage.Length > 0) {
+                sb.AppendFormat(" {0}", command.Usage);
+            }
+
+            // Print description
+            if (command.Note.Length > 0) {
+                sb.AppendFormat(" - {0}", command.Note);
+            }
+            sb.AppendLine();
         }
     }
 }

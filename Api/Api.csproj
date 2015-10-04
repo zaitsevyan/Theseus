@@ -50,9 +50,22 @@
     <Compile Include="Account.cs" />
     <Compile Include="Role.cs" />
     <Compile Include="Handler.cs" />
+    <Compile Include="ApiStrings.Designer.cs">
+      <DependentUpon>ApiStrings.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Util.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="ApiStrings.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>ApiStrings.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ApiStrings.ru.resx">
+      <LastGenOutput>ApiStrings.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
   </ItemGroup>
 </Project>
