@@ -2,18 +2,7 @@
   "adapters": [
     {
       "class": "TerminalAdapter",
-      "locale": "cs"
-    },
-    {
-      "class": "JabberAdapter",
-      "locale": "ru",
-      "config": {
-      	"nickname": "Theseus",
-        "username": "theseus",
-        "password": "$AvadaKedavra$",
-        "server": "xmpp.ru",
-        "conference": "gamecoma@conference.jabber.ru"
-      }
+      "locale": "en"
     }
   ],
   "handlers": [
@@ -21,7 +10,8 @@
       "class": "TheseusControl"
     },
     {
-      "class": "Auth"
+      "class": "Auth",
+      "locale": cs
     },
     {
       "class": "Minecraft",
