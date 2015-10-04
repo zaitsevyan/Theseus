@@ -58,7 +58,7 @@ It is json object of two parts: **adapters** and **handlers**. Both of it have s
     },
     {
       "class": "JabberAdapter",
-      "locale": "ru"
+      "locale": "ru",
       "config": {
       	"nickname": "Theseus",
         "username": "theseus",
@@ -258,7 +258,7 @@ public override void Process(Request request, Response response){
  - When *CancellationToken* is canceled, you should finish your operations as fast as possible and call **Api.Plugin.Finish()** method. If it will not be called, **Theseus.Core** will wait some time and aborts plugin's thread(is not safe).
 
 ## How to implement new command handler
- Note: When command handler is invoked, required *CultureInfo* is set in *Thread.CurrentThread*. Custom *SynchronizationContext* is used to hold same CultureInfo through async/await calls. Command are looked up with diacritic and case ignore options, so, if your command is **přihlásitse**, you could type **/prihlAsItse** and it will work correctly.
+ Note: When command handler is called, correct *CultureInfo* is set in *Thread.CurrentThread.CurrentCulture*. Custom *SynchronizationContext* is used to hold same *CultureInfo* through async/await calls. Command are looked up with diacritic and case ignore options, so, if your command is **přihlásitse**, you could type **/prihlAsItse** and it will work correctly.
 
  - Create public class inherited from **Api.Handler**
  - Implement public constuctor
@@ -338,14 +338,14 @@ public async Task<Response> Login(Sender sender, String[] args){
 }
 ~~~
  - You can localize command with yours resources file. See **TheseusControl** project, there are exists TheseusControlStrings.resx, TheseusControlStrings.Designer.cs, TheseusControlStrings.ru.resx. When you define command attribute, you could set ResourseType with yours resources class type and use localization keys for **name**, **usage** and **note** params.
- ~~~{.cs}
- [Command("Shutdown_Command", "Shutdown_Usage", "Shutdown_Command", ResourceType = typeof(TheseusControlStrings))]
- [Roles(Role.Owner)]
- public Task<Response> Shutdown(Sender sender, String[] args){
-    Manager.GetCore().Stop();
-    return Task.FromResult<Response>(null);
- }
- ~~~
+~~~{.cs}
+[Command("Shutdown_Command", "Shutdown_Usage", "Shutdown_Command", ResourceType = typeof(TheseusControlStrings))]
+[Roles(Role.Owner)]
+public Task<Response> Shutdown(Sender sender, String[] args){
+  Manager.GetCore().Stop();
+  return Task.FromResult<Response>(null);
+}
+~~~
 
 ### TODO
  - Move accounts subsystem to own handler implementation.
