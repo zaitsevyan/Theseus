@@ -5,7 +5,6 @@ Release
 stats.sh
 *~
 *.userprefs
-Runner/configuration.json
 packages
 !packages/repositories.config
 Releases
