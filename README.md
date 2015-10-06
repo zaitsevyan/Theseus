@@ -113,8 +113,8 @@ Every instance in config will be initialized as new adapter instance at runtime.
  - **server** - Server host (jabber.org, jabber.ru, xmpp.ru, ...).
  - **conference** - Full room ID (gamecoma@conference.jabber.ru, ...).
 
- ##### NetworkListener
- Simple Tcp Listener, which listen on configured port for input and send back results.
+##### NetworkListener
+Simple Tcp Listener, which listen on configured port for input and send back results.
   - **port** - Listener port.
 
 ##### TheseusControl
