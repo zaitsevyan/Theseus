@@ -34,7 +34,7 @@ namespace Runner {
             fileTarget.AutoFlush = true;
 
             // Step 4. Define rules
-            var rule1 = new LoggingRule("*", LogLevel.Info, consoleTarget);
+            var rule1 = new LoggingRule("*", LogLevel.Debug, consoleTarget);
             config.LoggingRules.Add(rule1);
 
             var rule2 = new LoggingRule("*", LogLevel.Debug, fileTarget);

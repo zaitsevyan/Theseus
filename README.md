@@ -57,6 +57,13 @@ It is json object of two parts: **adapters** and **handlers**. Both of it have, 
       "class": "TerminalAdapter"
     },
     {
+      "class": "NetworkListener",
+      "locale": "cs",
+      "config" : {
+        "port": 5090
+      }
+    },
+    {
       "class": "JabberAdapter",
       "locale": "ru",
       "config": {
@@ -105,6 +112,10 @@ Every instance in config will be initialized as new adapter instance at runtime.
  - **password** - Jabber password.
  - **server** - Server host (jabber.org, jabber.ru, xmpp.ru, ...).
  - **conference** - Full room ID (gamecoma@conference.jabber.ru, ...).
+
+ ##### NetworkListener
+ Simple Tcp Listener, which listen on configured port for input and send back results.
+  - **port** - Listener port.
 
 ##### TheseusControl
 Configuration is not required.

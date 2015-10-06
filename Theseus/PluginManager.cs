@@ -145,6 +145,7 @@ namespace Theseus {
             }
         }
 
+
         /// <summary>
         /// Loads the assemblies and initializes plugins.
         /// </summary>
@@ -190,7 +191,11 @@ namespace Theseus {
             Task.Factory.StartNew(() => {
                     BeforePluginRun(plugin, token);
                     Logger.Info("{0} starting...", plugin);
+                try {
                     plugin.Start(token);
+                } catch (Exception e) {
+                    Logger.Error(e);
+                }
                 });
         }
 
