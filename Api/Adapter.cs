@@ -21,6 +21,12 @@ namespace Api {
         public readonly IAdapterManager Manager;
 
         /// <summary>
+        /// Gets or sets the adapter destination locale.
+        /// </summary>
+        /// <value>The culture.</value>
+        public CultureInfo Culture { get; set; }
+
+        /// <summary>
         /// Initializes a new instance of the <see cref="Api.Adapter"/> class.
         /// </summary>
         /// <param name="name">Adapter name.</param>

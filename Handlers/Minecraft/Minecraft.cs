@@ -85,10 +85,7 @@ namespace Handlers {
                 var host = server["host"] as String;
                 var port = short.Parse(server["port"].ToString());
                 Logger.Debug("{3} {0}[{1}:{2}]...", serverName, host, port, MinecraftStrings.Ping);
-                Logger.Debug("Start Thread = {0}, Culture = {1}", Thread.CurrentThread.ManagedThreadId, Thread.CurrentThread.CurrentCulture);
                 var ping = await new MCServerPing.ServerPing(host, port, CancellationToken).Ping();
-                Logger.Debug("End Thread = {0}, Culture = {1}", Thread.CurrentThread.ManagedThreadId, Thread.CurrentThread.CurrentCulture);
-
                 sb.AppendFormat("{0}/{1} - {2}", ping.Players.Online, ping.Players.Max, ping.Motd);
                 sb.AppendLine();
             }

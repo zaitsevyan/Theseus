@@ -49,7 +49,7 @@ It is json array, every item is one acount record.
 - **Role** -  Account permissions. One of Owner, Admin, Moderator, Normal, Ignore. It could be extended with **Api.Role** enum.
 
 #### configuration.json
-It is json object of two parts: **adapters** and **handlers**. Both of it have same structure, but they are used to configurate different plugin types: **adapters** for **Api.Adapter** objects, **handlers** for **Api.Handler** objects
+It is json object of two parts: **adapters** and **handlers**. Both of it have, mostly, same structure, but they are used to configurate different plugin types: **adapters** for **Api.Adapter** objects, **handlers** for **Api.Handler** objects
 ~~~{.json}
 {
   "adapters": [
@@ -73,8 +73,7 @@ It is json object of two parts: **adapters** and **handlers**. Both of it have s
       "class": "TheseusControl"
     },
     {
-      "class": "Auth",
-      "locale": "cs"
+      "class": "Auth"
     },
     {
       "class": "Minecraft",
@@ -93,7 +92,7 @@ It is json object of two parts: **adapters** and **handlers**. Both of it have s
 
 ##### Plugin structure
  - **class** - .NET class in assembly. It should be inherited from **Api.Adapter**/**Api.Handler**
- - **locale** - .NET culture identifier. It will be used as *Thread.CurrentThread.CurrentCulture*, when plugin's methods would be called. Handler's locale override caller(adapter) locale.
+ - **locale** - .NET culture identifier. It will be used as *Thread.CurrentThread.CurrentCulture*, when plugin's methods would be called. Handler's locale override caller(adapter) locale. It is supported for adapters only.
  - **config** - dictionary, which will be loaded during plugin initialization process. (Config will be visible in plugin constructor)
 
 ##### TerminalAdapter

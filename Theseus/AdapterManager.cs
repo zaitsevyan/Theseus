@@ -72,6 +72,20 @@ namespace Theseus {
             if (adapter.IsRunning && request != null && !response.IsEmpty)
                 adapter.Process(request, response);
         }
+
+        public override void AddPlugin(Adapter adapter, Configuration.Plugin config){
+            base.AddPlugin(adapter, config);
+            if(config.Locale != null)
+                adapter.Culture = new CultureInfo(config.Locale);
+        }
+
+        protected override void BeforePluginRun(Adapter adapter, CancellationToken token){
+            base.BeforePluginRun(adapter, token);
+            Thread.CurrentThread.CurrentCulture = adapter.Culture ?? DefaultCulture;
+            Thread.CurrentThread.CurrentUICulture = adapter.Culture ?? DefaultCulture;
+            SynchronizationContext.SetSynchronizationContext(new CultureAwareSynchronizationContext());
+
+        }
     }
 }
 

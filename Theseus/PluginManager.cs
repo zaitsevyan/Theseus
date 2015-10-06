@@ -137,10 +137,7 @@ namespace Theseus {
                 var type = LookupPlugin(plugin.Class);
                 if (type != null) {
                     T instance = (T)Activator.CreateInstance(type, new object[]{ plugin.Config, this });
-                    if (plugin.Locale != null) {
-                        instance.Culture = new CultureInfo(plugin.Locale);
-                    }
-                    AddPlugin(instance);
+                    AddPlugin(instance, plugin);
                 }
                 else {
                     Logger.Error("Cannot find {0} plugin", plugin.Class);
@@ -161,7 +158,8 @@ namespace Theseus {
         /// Adds the plugin.
         /// </summary>
         /// <param name="plugin">Plugin.</param>
-        public virtual void AddPlugin(T plugin){
+        /// <param name="config">Configuration.</param>
+        public virtual void AddPlugin(T plugin, Configuration.Plugin config){
             plugins.Add(plugin);
         }
 
@@ -190,13 +188,19 @@ namespace Theseus {
         /// <param name="token">Cancellation token.</param>
         protected void Run(T plugin, CancellationToken token){
             Task.Factory.StartNew(() => {
-
-                    Thread.CurrentThread.CurrentCulture = plugin.Culture ?? DefaultCulture;
-                    Thread.CurrentThread.CurrentUICulture = plugin.Culture ?? DefaultCulture;
-                    SynchronizationContext.SetSynchronizationContext(new CultureAwareSynchronizationContext());
+                    BeforePluginRun(plugin, token);
                     Logger.Info("{0} starting...", plugin);
                     plugin.Start(token);
                 });
+        }
+
+        /// <summary>
+        /// Method, that is executed before plugin.Start(token) call.
+        /// </summary>
+        /// <param name="plugin">Plugin.</param>
+        /// <param name="token">Cancellation token.</param>
+        protected virtual void BeforePluginRun(T plugin, CancellationToken token){
+            
         }
 
         /// <summary>

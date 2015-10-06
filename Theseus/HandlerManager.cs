@@ -67,18 +67,8 @@ namespace Theseus {
             /// </summary>
             /// <returns><c>true</c> if this instance is responsible for command name the specified commandName; otherwise, <c>false</c>.</returns>
             /// <param name="commandName">Command name.</param>
-            public bool IsResponsibleForCommandName(String commandName) {
-                var c = Thread.CurrentThread.CurrentCulture;
-                var uic = Thread.CurrentThread.CurrentUICulture;
-                if (Handler.Culture != null) {
-                    Thread.CurrentThread.CurrentCulture = Handler.Culture;
-                    Thread.CurrentThread.CurrentUICulture = Handler.Culture;
-                }
-                bool result = Command.NormalizedNames.Any((name) => String.Equals(name, commandName, StringComparison.CurrentCultureIgnoreCase));
-
-                Thread.CurrentThread.CurrentCulture = c;
-                Thread.CurrentThread.CurrentUICulture = uic;
-                return result;
+            public bool IsResponsibleForCommandName(String commandName){
+                return Command.NormalizedNames.Any((name) => String.Equals(name, commandName, StringComparison.CurrentCultureIgnoreCase));
             }
 
             /// <summary>
@@ -88,13 +78,6 @@ namespace Theseus {
             /// <param name="sender">Initial sender.</param>
             /// <param name="args">Arguments.</param>
             public async Task<Response> InvokeHandler(Sender sender, String[] args){
-                if(Handler.Culture != null)
-                {
-                    Thread.CurrentThread.CurrentCulture = Handler.Culture;
-                    Thread.CurrentThread.CurrentUICulture = Handler.Culture;
-                    SynchronizationContext.SetSynchronizationContext(new CultureAwareSynchronizationContext());
-                }
-
                 Task<Response> response = (Task<Response>)MethodInfo.Invoke(Handler, new object[]{ sender, args });
                 return await response;
             }
@@ -142,7 +125,7 @@ namespace Theseus {
         /// </summary>
         /// <returns>The command handler.</returns>
         /// <param name="commandName">Command name.</param>
-        private CommandHandler GetCommandHandler(String commandName) {
+        private CommandHandler GetCommandHandler(String commandName){
             commandName = commandName.RemoveDiacritics();
             return allowedCommands.FirstOrDefault((handler) => handler.IsResponsibleForCommandName(commandName));
         }
@@ -152,7 +135,7 @@ namespace Theseus {
         /// It is '/' by default.
         /// </summary>
         /// <returns>The command prefix.</returns>
-        public String GetCommandPrefix() {
+        public String GetCommandPrefix(){
             return COMMAND_PREFIX;
         }
 
@@ -160,8 +143,8 @@ namespace Theseus {
         /// Adds the plugin.
         /// </summary>
         /// <param name="handler">Handler.</param>
-        public override void AddPlugin(Handler handler){
-            base.AddPlugin(handler);
+        public override void AddPlugin(Handler handler, Configuration.Plugin config){
+            base.AddPlugin(handler, config);
             AddCommandsMap(handler);
         }
 
@@ -211,9 +194,9 @@ namespace Theseus {
         /// <returns><c>true</c>, if IAdapterManager should process request, <c>false</c> otherwise.</returns>
         /// <param name="request">Request.</param>
         public bool ShouldProcessRequest(Request request){
-            return request.Command != null 
-                && request.Command.StartsWith(COMMAND_PREFIX) 
-                && request.Command.Length > COMMAND_PREFIX.Length;
+            return request.Command != null
+            && request.Command.StartsWith(COMMAND_PREFIX)
+            && request.Command.Length > COMMAND_PREFIX.Length;
         }
 
         /// <summary>
@@ -228,7 +211,7 @@ namespace Theseus {
             //Parse string "/login admin 'long password with spaces and " another brackets"'" 
             // as [/login,admin, long password with spaces and " another brackets"]
             // I implement correct 'brackets' sequence: "'""'", next algorithm will return '""' argument instead of "'","'"
-            while(enumerator.MoveNext()) {
+            while (enumerator.MoveNext()) {
                 var element = enumerator.Current.ToString();
                 if (element == " " && nesting.Count == 0) { // simply split by whitespace
                     if (currentElement.Length > 0) {
