@@ -88,4 +88,22 @@
     <data name="Time.Forever">
         <value>навсегда</value>
     </data>
+    <data name="Reboot.Command">
+        <value>перезагрузить</value>
+    </data>
+    <data name="Reboot.Usage">
+        <value>&lt;сервер&gt;</value>
+    </data>
+    <data name="Reboot.Note">
+        <value>Перезагрузить сервер. Работает, только если настроен скрипт перезагрузки.</value>
+    </data>
+    <data name="Reboot.ArgsError">
+        <value>Неправильыне параметры</value>
+    </data>
+    <data name="Reboot.ConfigError">
+        <value>Этот сервер не поддерживает команду перезагрузки</value>
+    </data>
+    <data name="Reboot.Exception">
+        <value>Что-то пошло не так, смотрите логи.</value>
+    </data>
 </root>

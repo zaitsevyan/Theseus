@@ -46,105 +46,9 @@ namespace Handlers {
             }
         }
         
-        internal static string Unban_Command {
+        internal static string Reboot_ConfigError {
             get {
-                return ResourceManager.GetString("Unban.Command", resourceCulture);
-            }
-        }
-        
-        internal static string Ban_Command {
-            get {
-                return ResourceManager.GetString("Ban.Command", resourceCulture);
-            }
-        }
-        
-        internal static string ParseError {
-            get {
-                return ResourceManager.GetString("ParseError", resourceCulture);
-            }
-        }
-        
-        internal static string Players_Note {
-            get {
-                return ResourceManager.GetString("Players.Note", resourceCulture);
-            }
-        }
-        
-        internal static string Unban_Note {
-            get {
-                return ResourceManager.GetString("Unban.Note", resourceCulture);
-            }
-        }
-        
-        internal static string ConnectionError {
-            get {
-                return ResourceManager.GetString("ConnectionError", resourceCulture);
-            }
-        }
-        
-        internal static string OptionsParseError {
-            get {
-                return ResourceManager.GetString("OptionsParseError", resourceCulture);
-            }
-        }
-        
-        internal static string Servers_Command {
-            get {
-                return ResourceManager.GetString("Servers.Command", resourceCulture);
-            }
-        }
-        
-        internal static string Ban_Ok {
-            get {
-                return ResourceManager.GetString("Ban.Ok", resourceCulture);
-            }
-        }
-        
-        internal static string Servers_Usage {
-            get {
-                return ResourceManager.GetString("Servers.Usage", resourceCulture);
-            }
-        }
-        
-        internal static string Ban_Usage {
-            get {
-                return ResourceManager.GetString("Ban.Usage", resourceCulture);
-            }
-        }
-        
-        internal static string Unban_Usage {
-            get {
-                return ResourceManager.GetString("Unban.Usage", resourceCulture);
-            }
-        }
-        
-        internal static string Unban_Ok {
-            get {
-                return ResourceManager.GetString("Unban.Ok", resourceCulture);
-            }
-        }
-        
-        internal static string PlayerNameMissing {
-            get {
-                return ResourceManager.GetString("PlayerNameMissing", resourceCulture);
-            }
-        }
-        
-        internal static string Servers_PrintTitle {
-            get {
-                return ResourceManager.GetString("Servers.PrintTitle", resourceCulture);
-            }
-        }
-        
-        internal static string Servers_Note {
-            get {
-                return ResourceManager.GetString("Servers.Note", resourceCulture);
-            }
-        }
-        
-        internal static string Players_PrintTitle {
-            get {
-                return ResourceManager.GetString("Players.PrintTitle", resourceCulture);
+                return ResourceManager.GetString("Reboot.ConfigError", resourceCulture);
             }
         }
         
@@ -154,9 +58,51 @@ namespace Handlers {
             }
         }
         
-        internal static string Ban_Note {
+        internal static string Players_Command {
             get {
-                return ResourceManager.GetString("Ban.Note", resourceCulture);
+                return ResourceManager.GetString("Players.Command", resourceCulture);
+            }
+        }
+        
+        internal static string ParseError {
+            get {
+                return ResourceManager.GetString("ParseError", resourceCulture);
+            }
+        }
+        
+        internal static string Unban_Usage {
+            get {
+                return ResourceManager.GetString("Unban.Usage", resourceCulture);
+            }
+        }
+        
+        internal static string OptionsParseError {
+            get {
+                return ResourceManager.GetString("OptionsParseError", resourceCulture);
+            }
+        }
+        
+        internal static string Unban_Note {
+            get {
+                return ResourceManager.GetString("Unban.Note", resourceCulture);
+            }
+        }
+        
+        internal static string Servers_Note {
+            get {
+                return ResourceManager.GetString("Servers.Note", resourceCulture);
+            }
+        }
+        
+        internal static string Reboot_Command {
+            get {
+                return ResourceManager.GetString("Reboot.Command", resourceCulture);
+            }
+        }
+        
+        internal static string Reboot_Exception {
+            get {
+                return ResourceManager.GetString("Reboot.Exception", resourceCulture);
             }
         }
         
@@ -166,15 +112,105 @@ namespace Handlers {
             }
         }
         
-        internal static string Players_Command {
+        internal static string Reboot_ArgsError {
             get {
-                return ResourceManager.GetString("Players.Command", resourceCulture);
+                return ResourceManager.GetString("Reboot.ArgsError", resourceCulture);
+            }
+        }
+        
+        internal static string Servers_Usage {
+            get {
+                return ResourceManager.GetString("Servers.Usage", resourceCulture);
+            }
+        }
+        
+        internal static string Unban_Ok {
+            get {
+                return ResourceManager.GetString("Unban.Ok", resourceCulture);
+            }
+        }
+        
+        internal static string Reboot_Usage {
+            get {
+                return ResourceManager.GetString("Reboot.Usage", resourceCulture);
+            }
+        }
+        
+        internal static string Ban_Usage {
+            get {
+                return ResourceManager.GetString("Ban.Usage", resourceCulture);
+            }
+        }
+        
+        internal static string Reboot_Note {
+            get {
+                return ResourceManager.GetString("Reboot.Note", resourceCulture);
+            }
+        }
+        
+        internal static string Players_Note {
+            get {
+                return ResourceManager.GetString("Players.Note", resourceCulture);
+            }
+        }
+        
+        internal static string Players_PrintTitle {
+            get {
+                return ResourceManager.GetString("Players.PrintTitle", resourceCulture);
+            }
+        }
+        
+        internal static string Ban_Ok {
+            get {
+                return ResourceManager.GetString("Ban.Ok", resourceCulture);
+            }
+        }
+        
+        internal static string Servers_Command {
+            get {
+                return ResourceManager.GetString("Servers.Command", resourceCulture);
+            }
+        }
+        
+        internal static string Ban_Command {
+            get {
+                return ResourceManager.GetString("Ban.Command", resourceCulture);
+            }
+        }
+        
+        internal static string ConnectionError {
+            get {
+                return ResourceManager.GetString("ConnectionError", resourceCulture);
+            }
+        }
+        
+        internal static string PlayerNameMissing {
+            get {
+                return ResourceManager.GetString("PlayerNameMissing", resourceCulture);
             }
         }
         
         internal static string Time_Forever {
             get {
                 return ResourceManager.GetString("Time.Forever", resourceCulture);
+            }
+        }
+        
+        internal static string Servers_PrintTitle {
+            get {
+                return ResourceManager.GetString("Servers.PrintTitle", resourceCulture);
+            }
+        }
+        
+        internal static string Unban_Command {
+            get {
+                return ResourceManager.GetString("Unban.Command", resourceCulture);
+            }
+        }
+        
+        internal static string Ban_Note {
+            get {
+                return ResourceManager.GetString("Ban.Note", resourceCulture);
             }
         }
     }

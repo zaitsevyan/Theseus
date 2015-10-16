@@ -87,4 +87,23 @@
     <data name="Time.Forever">
         <value>forever</value>
     </data>
+    <data name="Reboot.Command">
+        <value>reboot</value>
+    </data>
+    <data name="Reboot.Usage">
+        <value>&lt;server&gt;</value>
+    </data>
+    <data name="Reboot.Note">
+        <value>Reboot server. Works only if reboot script configured.</value>
+    </data>
+    <data name="Reboot.ArgsError">
+        <value>Incorrect arguments</value>
+    </data>
+    <data name="Reboot.ConfigError">
+        <value>This server does not support reboot</value>
+    </data>
+    <data name="Reboot.Exception">
+        <value>Something is going wrong, see log.</value>
+    </data>
+
 </root>

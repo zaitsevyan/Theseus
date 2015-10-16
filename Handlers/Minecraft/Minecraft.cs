@@ -17,6 +17,7 @@ using Newtonsoft.Json;
 using System.Threading;
 using ArgumentsLibrary;
 using ArgumentsLibrary.Exceptions;
+using System.Diagnostics;
 
 namespace Handlers {
     public class Minecraft : Handler {
@@ -42,6 +43,53 @@ namespace Handlers {
             var response = new Response(Channel.Same);
             response.SetMessage("{1}: {0}", String.Join(", ", GetServersList()), MinecraftStrings.Servers_PrintTitle);
             return Task.FromResult(response);
+        }
+
+        [Command("Reboot_Command", "Reboot_Usage", "Reboot_Note", 
+            ResourceType = typeof(MinecraftStrings))]
+        [Roles(Role.Admin)]
+        public Task<Response> Reboot(Sender sender, String[] args){
+            if (args.Length != 1) {
+                var error = new Response(Channel.Private);
+                error.SetError(MinecraftStrings.Reboot_ArgsError);
+                return Task.FromResult(error);
+            }
+            var serverName = args[0];
+            if (!GetServersList().Contains(serverName)) {
+                var error = new Response(Channel.Private);
+                error.SetError(MinecraftStrings.Reboot_ArgsError);
+                return Task.FromResult(error);
+            }
+            var server = (Config["servers"] as Dictionary<String, Object>)[serverName] as Dictionary<String, Object>;
+            if (!server.ContainsKey("reboot-exec")) {
+                var error = new Response(Channel.Private);
+                error.SetError(MinecraftStrings.Reboot_ConfigError);
+                return Task.FromResult(error);
+            }
+            var command = server["reboot-exec"] as String;
+            try {
+                // Start the child process.
+                Process p = new Process();
+                // Redirect the output stream of the child process.
+                p.StartInfo.UseShellExecute = false;
+                p.StartInfo.RedirectStandardOutput = true;
+                p.StartInfo.FileName = "/bin/bash";
+                p.StartInfo.Arguments = command;
+                p.Start();
+                // Do not wait for the child process to exit before
+                // reading to the end of its redirected stream.
+                // p.WaitForExit();
+                // Read the output stream first and then wait.
+                string output = p.StandardOutput.ReadToEnd();
+                p.WaitForExit();
+                var response = new Response(Channel.Same);
+                response.SetMessage(output);
+                return Task.FromResult(response);
+            } catch (Exception) {
+                var error = new Response(Channel.Private);
+                error.SetError(MinecraftStrings.Reboot_Exception);
+                return Task.FromResult(error);
+            }
         }
 
         [Command("Players_Command", "Players_Usage", "Players_Note",

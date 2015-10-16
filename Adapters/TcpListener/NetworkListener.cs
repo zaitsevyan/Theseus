@@ -15,6 +15,7 @@ using System.Threading.Tasks;
 using System.IO;
 using System.Net;
 
+/// TODO: Extend to work with UDP.
 namespace Adapters {
     public class NetworkListener: Adapter {
         private class Connection : Sender {
